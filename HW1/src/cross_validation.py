@@ -8,12 +8,12 @@ from numpy.random import randint
 from math import ceil
 
 
-def n_fold_cv(X, y, Classifier_, n_fold, n_rep, *args):
+def n_fold_cv(X, y, Classifier_, n_fold, n_rep, args=[]):
     n_obs = y.size
     error_mat = np.zeros((n_rep, n_fold))
     index = np.arange(n_obs)
     for rep in range(0, n_rep):
-        print "Replicate No. %d" % rep
+        print("Replicate No. ", rep)
         np.random.shuffle(index)
         index = index[np.argsort(y[index], kind='mergesort')]
         for fold in range(0, n_fold):
@@ -23,21 +23,17 @@ def n_fold_cv(X, y, Classifier_, n_fold, n_rep, *args):
             y_train = y[train_index]
             X_test = X[test_index, :]
             y_test = y[test_index]
-            if args:
-                model = Classifier_(X_train, y_train, args[0])  # ugly design here
-            else:
-                model = Classifier_(X_train, y_train)
+            model = Classifier_(X_train, y_train, *args)
             error_mat[rep, fold] = model.validate(X_test, y_test)
     # print(error_mat)
     return error_mat
 
 
-def fancy_cv(X, y, Classifier_, n_rep, train_percent, *args):
+def fancy_cv(X, y, Classifier_, n_rep, train_percent, args=[]):
     n_obs = y.size
     error_mat = np.zeros((n_rep, train_percent.size))
-    index = np.arange(n_obs)
     for rep in range(0, n_rep):
-        print "Replicate No. %d" % rep
+        print("Replicate No. ", rep)
         # here slipe the whole set as 80% train 20test
         train_index, test_index = train_test_index(y, .8)
         X_train = X[train_index, :]
@@ -49,10 +45,7 @@ def fancy_cv(X, y, Classifier_, n_rep, train_percent, *args):
             train_sub_index = train_test_index(y_train, percent)[0]
             X_train_sub = X_train[train_sub_index, :]
             y_train_sub = y_train[train_sub_index]
-            if args:
-                model = Classifier_(X_train_sub, y_train_sub, args[0])  # ugly design here
-            else:
-                model = Classifier_(X_train_sub, y_train_sub)
+            model = Classifier_(X_train_sub, y_train_sub, *args)
             error_mat[rep, p] = model.validate(X_test, y_test)
     # print(error_mat)
     return error_mat
@@ -72,18 +65,21 @@ def train_test_index(y, train_percent):
     return (train_index, test_index)
 
 
-# data_spam = np.genfromtxt('dataset/spam.csv', delimiter=",", skip_header=0)
-# X = data_spam[:, 1:]
-# y = data_spam[:, 0].astype(int)
-
-
-data_MNIST = np.load('data_MNIST.npy')
-X = data_MNIST[:, 1:]
-y = data_MNIST[:, 0].astype(int)
-result = n_fold_cv(X, y, Multivariate_Gaussian, 10, 1)
-print(result)
-# result = fancy_cv(X, y, Naive_Bayes, 30, np.array([1, 2, 3, 5, 10]))
+data_spam = np.genfromtxt('../dataset/spam.csv', delimiter=",", skip_header=0)
+X = data_spam[:, 1:]
+y = data_spam[:, 0].astype(int)
+result = n_fold_cv(X, y, Logistic_Regression, 10, 2, [1])
 print(np.mean(result, axis=0))
+print(np.std(result, axis=0))
+
+# data_MNIST = np.load('data_MNIST.npy')
+# X = data_MNIST[:, 1:]
+# y = data_MNIST[:, 0].astype(int)
+# result = n_fold_cv(X, y, Least_Square_Discriminant, 10, 1)
+# print(result)
+
+# # result = fancy_cv(X, y, Naive_Bayes, 30, np.array([1, 2, 3, 5, 10]))
+# print(np.mean(result, axis=0))
 
 # print("Reading data now ...")
 # data_MNIST = np.load('data_MNIST.npy')

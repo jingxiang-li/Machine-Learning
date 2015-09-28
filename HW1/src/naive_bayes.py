@@ -45,7 +45,7 @@ class Naive_Bayes (Classifier):
             X_sub = X[index, :]
             mean_array[k, :] = np.mean(X_sub, axis=0)
             std_array[k, :] = np.std(X_sub, axis=0, ddof=1)
-            std_array[std_array < 1e-2] = 1e-02
+            std_array[std_array < 1e-03] = 1e-03
         # print(mean_array)
         # print(std_array)
         return (mean_array, std_array)

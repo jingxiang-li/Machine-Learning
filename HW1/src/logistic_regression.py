@@ -79,7 +79,7 @@ class Logistic_Regression (Classifier):
         # random initialization
         num_obs, num_features = X.shape[0], X.shape[1]
         w = (np.random.rand(num_features) - 0.5) * 2
-        lr_fmin_result = fmin(f=self.lr_loss, x0=w, fprime=self.lr_gradient, args=(X, y, lambda_), disp=False)
+        lr_fmin_result = fmin(f=self.lr_loss, x0=w, fprime=self.lr_gradient, args=(X, y, lambda_), maxiter=50, disp=False)
         return lr_fmin_result
 
     def predict_score(self, X):

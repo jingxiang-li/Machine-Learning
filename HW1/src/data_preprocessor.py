@@ -16,7 +16,7 @@ class Data_Preprocessor:
     def remove_zero_variance_features(self, X):
         # return new X and index of valid columns
         std_array = np.std(X, axis=0)
-        self.valid_col_index = std_array > 1e-02
+        self.valid_col_index = std_array > 1e-03
         return X[:, self.valid_col_index]
 
     def standardize(self, X):
