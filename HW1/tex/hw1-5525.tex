@@ -1,0 +1,185 @@
+%!TEX program = pdflatex
+%# -*- coding: utf-8 -*-
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt,oneside,a4paper]{article}
+
+%% ------------------------------------------------------
+%% load packages
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false,
+ unicode=true]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{url}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{microtype}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage[retainorgcmds]{IEEEtrantools}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}} 
+% \renewcommand{\algorithmicensure}{\textbf{Output:}} 
+\usepackage[algoruled, vlined]{algorithm2e}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mono=false]{libertine}
+\usepackage[libertine]{newtxmath}
+\linespread{1.1}  
+% \usepackage[toc,eqno,enum,bib,lineno]{tabfigures}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[figure]{hypcap}
+\usepackage[hypcap]{caption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{grffile} 
+%\usepackage{float} 
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+\usepackage{needspace}
+
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{tabu}
+
+\usepackage{verbatim}
+
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{knitrout}{
+    \begin{tabu} to \textwidth {XcX}
+    \toprule[.7pt]
+    & R Code Chunk & \\
+    \bottomrule[.7pt]
+    \end{tabu}
+    \vspace*{-.5\baselineskip}
+}
+\AfterEndEnvironment{knitrout}{
+    \vspace*{-.5\baselineskip}
+    \noindent\rule{\textwidth}{.7pt}
+}
+
+%% Class, Exam, Date, etc.
+\newcommand{\class}{STAT 5701: Statistical Computing}
+\newcommand{\term}{Fall 2015}
+\newcommand{\examnum}{Homework 1}
+\newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
+\newcommand{\hmwkAuthorName}{Jingxiang Li}
+
+\title{\hmwkTitle}
+\author{\hmwkAuthorName}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\lhead{\hmwkAuthorName}
+\chead{}
+\rhead{\hmwkTitle}
+\cfoot{\thepage}
+
+\newcounter{problemCounter}
+\newcounter{subproblemCounter}
+\renewcommand{\thesubproblemCounter}{\alph{subproblemCounter}}
+\newcommand{\problem}[0] {
+    \clearpage
+    \stepcounter{problemCounter}
+    \setcounter{subproblemCounter}{0}
+}
+
+\newcommand{\subproblem}[0] {
+    \stepcounter{subproblemCounter}
+    \Needspace*{8\baselineskip}
+    \vspace{1.8\baselineskip}
+    \noindent{\textbf{\large{Problem \theproblemCounter.\hspace{1pt}\thesubproblemCounter}}}
+    \vspace{\baselineskip}
+    \newline
+}
+
+\newcommand{\solution} {
+    \vspace{15pt}
+    \noindent\ignorespaces\textbf{\large Solution}\par
+}
+\setlength\parindent{0pt}
+
+%% some math shortcuts
+\newcommand{\m}[1]{\texttt{{#1}}}
+\newcommand{\E}[0]{\mathrm{E}}
+\newcommand{\Var}[0]{\mathrm{Var}}
+\newcommand{\sd}[0]{\mathrm{sd}}
+\newcommand{\Cov}[0]{\mathrm{Cov}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\problem
+\subproblem
+The optimal $f(x)$ is $f(x) = E(y|x)$
+\proof
+The expected loss is
+\begin{equation*}
+\begin{aligned} 
+E_{(x,y)}[l(f(x), y)] &= \int_{x}{\int_{y}{l(f(x), y)p(y|x)dy}p(x)}dx \\ 
+&= \int_{x}{\int_{y}{(f(x) - y)^{2}p(y|x)dy}p(x)}dx
+\end{aligned}
+\end{equation*}
+Here we minimize the expected loss
+\begin{equation*}
+\min_{f}\E_{(x,y)}[l(f(x), y)] \Leftrightarrow \min_{f}\int_{y}{(f(x) - y)^{2}p(y|x)dy}
+\end{equation*}
+To minimize the expected loss, we take the derivative with respect to $f$, and set it to 0.
+\begin{equation*}
+\begin{aligned} 
+& \frac{\partial}{\partial f}\int_{y}{(f(x) - y)^{2}p(y|x)dy} = 0\\
+\Rightarrow & \int_{y}{\frac{\partial}{\partial f}(f(x) - y)^{2}p(y|x)dy} = 0\\
+\Rightarrow & \int_{y}{(f(x) - y)p(y|x)dy} = 0\\
+\Rightarrow & \int_{y}{f(x)p(y|x)dy} = \int_{y}{yp(y|x)dy}\\
+\Rightarrow & f(x) = E(y|x)
+\end{aligned}
+\end{equation*}
+Q.E.D
+
+\problem
+\subproblem
+\proof
+The expected loss for $f$ is
+\begin{equation*}
+\begin{aligned} 
+L(f) = p(f(x) \neq y) = \E_{(x,y)}[I(f(x) \neq y)] = \int_{x}{\sum_{y}{I(f(x) \neq y)p(y|x)}p(x)}dx
+\end{aligned}
+\end{equation*}
+Here we minimize the expected loss with respect to $f$
+\begin{equation*}
+\begin{aligned}
+&\min_{f}\int_{x}{\sum_{y}{I(f(x) \neq y)p(y|x)}p(x)}dx \\
+\Leftrightarrow &\min_{f} \sum_{y}{I(f(x) \neq y)p(y|x)}\\
+\Leftrightarrow &\min_{f} I(f(x) \neq 1)p(1|x) + I(f(x) \neq -1)p(0|x)
+\end{aligned}
+\end{equation*}
+Notice that $p(0|x) > 0$, $p(1|x) > 0$ and $p(0|x) + p(1|x) = 1$.
+
+Considering $I(f(x) \neq 1)$ and $I(f(x) \neq 0)$, there will be exactly one has value 1, and another one 0.
+
+Hence once $p(1|x) > p(0|x)$, the optimal $f^*$ must satisfy $f^*(x) = 1$; otherwise $f^*(x) = -1$
+
+i.e.
+\begin{equation*}
+f^*(x) = \left\{ \begin{array}{ll}
++1, & \mathrm{if} ~ p(1|x) > 1/2\\
+-1, & \mathrm{otherwise}
+\end{array}
+\right.
+\end{equation*}
+Since $f^*$ is optimal, $L(f^*) \leq L(f)$
+
+Q.E.D.
+\end{document}

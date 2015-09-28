@@ -1,0 +1,164 @@
+%!TEX program = pdflatex
+%# -*- coding: utf-8 -*-
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt,oneside,a4paper,answers]{exam}
+
+%% ------------------------------------------------------
+%% load packages
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false,
+ unicode=true]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{url}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{microtype}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage[retainorgcmds]{IEEEtrantools}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}} 
+\renewcommand{\algorithmicensure}{\textbf{Output:}} 
+ 
+\usepackage[lf]{MinionPro}
+\usepackage[toc,eqno,enum,bib,lineno]{tabfigures}
+\usepackage{etoolbox}
+\AtBeginEnvironment{tabular}{%
+    \figureversion{tab} 
+}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[figure]{hypcap}
+\usepackage[hypcap]{caption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{grffile} 
+%\usepackage{float} 
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+
+\usepackage{verbatim}
+
+%% Specify the way questions are displayed:
+\renewcommand{\thequestion}{\textbf{\arabic{question}}}
+\renewcommand{\questionlabel}{\thequestion.~}
+\renewcommand{\thepartno}{\roman{partno}}
+\renewcommand{\partlabel}{(\thepartno)}
+\renewcommand{\theenumi}{\roman{enumi}}
+\renewcommand{\thesubpart}{\alph{subpart}}
+\renewcommand{\questionshook}{\setlength{\itemsep}{-20pt}}
+
+\renewcommand{\solutiontitle}{\noindent\textbf{Solution:}\par\noindent}
+
+%% define the style of the solution environment
+\shadedsolutions
+%\definecolor{SolutionColor}{rgb}{0.75,0.75,0.75}
+%\colorlet{SolutionColor}{gray!20}
+\definecolor{SolutionColor}{HTML}{F7F7F7}
+%\framedsolutions
+
+%% font size in verbatim environment
+% \makeatletter
+% \newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+% \makeatother
+% \verbatimfont{\footnotesize}%
+
+%% turn off paragraph indentation
+\setlength\headheight{15pt}
+\setlength\parindent{0pt}
+\setlength{\parskip}{0.5em}
+
+%% Class, Exam, Date, etc.
+\newcommand{\class}{CSCI 5525: Machine Learning}
+\newcommand{\term}{Fall 2015}
+\newcommand{\examnum}{Homework 0}
+\newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
+\newcommand{\hmwkAuthorName}{Jingxiang Li}
+
+\title{\hmwkTitle}
+\author{\hmwkAuthorName}
+
+\pagestyle{headandfoot}
+\firstpageheader{\class}{\examnum}{\hmwkAuthorName}
+\runningheader{\class}{\examnum}{\hmwkAuthorName}
+\headrule %\runningheadrule
+\firstpagefooter{}{Page \thepage\ of \numpages}{}
+\runningfooter{}{Page \thepage\ of \numpages}{}
+
+%% some math shortcuts
+\newcommand{\m}[1]{\texttt{{#1}}}
+\newcommand{\E}[0]{\mathrm{E}}
+\newcommand{\Var}[0]{\mathrm{Var}}
+\newcommand{\sd}[0]{\mathrm{sd}}
+\newcommand{\Cov}[0]{\mathrm{Cov}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\vspace*{-20pt}
+\begin{center}
+{\LARGE \hmwkTitle}\\[4ex]
+{\large \hmwkAuthorName}
+\end{center}
+\vspace*{.05in}
+
+\begin{questions}
+\question
+\begin{solution}
+yes
+\end{solution}
+
+\question
+\begin{solution}
+\begin{parts}
+\part 
+None of them
+\part
+STAT 8051 Advanced Regression Techniques; STAT 8052 Applied Statistical Methods II; STAT 8111 Math Stat I; STAT 8112 Math Stat II.
+\part
+CSCI 5304 Matrix Theory
+\part
+I haven't taken any course on Optimization.
+\end{parts}
+\end{solution}
+
+\question
+\begin{solution}
+$$\hat{\omega} = (X^{T}X + \lambda I)^{-1}X^{T}y$$
+\end{solution}
+
+\question
+\begin{solution}
+The largest eigenvalue of matrix $A$. Since $A$ is positive definite, it is also called the Spectral Radius of $A$.
+\end{solution}
+
+\question
+\begin{solution}
+\begin{parts}
+\part
+$$p(x;\mu, \Sigma) = (2\pi)^{-\frac{k}{2}}|\Sigma|^{-\frac{1}{2}}\exp(-\frac{1}{2}(x - \mu)^{T}\Sigma^{-1}(x - \mu))$$
+\part
+$$p(x;\mu, \Theta^{-1}) = (2\pi)^{-\frac{k}{2}}|\Theta|^{\frac{1}{2}}\exp(-\frac{1}{2}(x - \mu)^{T}\Theta(x - \mu))$$
+\end{parts}
+\end{solution}
+\end{questions}
+
+
+
+
+\end{document}
