@@ -17,6 +17,8 @@ class Logistic_Regression (Classifier):
         # preprocess y
         y = np.copy(y)
         self.y_vals = np.unique(y)
+        # check number of classes here
+        assert self.y_vals.size == 2
         y[y == self.y_vals[0]] = -1
         y[y == self.y_vals[1]] = +1
         # train the model
@@ -64,7 +66,7 @@ class Logistic_Regression (Classifier):
         return -grad[0]
 
     def grad_check(self, w, X, y, lambda_):
-        num_obs, num_features = X.shape[0], X.shape[1]
+        num_obs, num_features = X.shape
         grad0 = lr_gradient(w, X, y, lambda_)
         print(grad0)
         eps = 1e-05
@@ -77,7 +79,7 @@ class Logistic_Regression (Classifier):
 
     def lr_train(self, X, y, lambda_):
         # random initialization
-        num_obs, num_features = X.shape[0], X.shape[1]
+        num_obs, num_features = X.shape
         w = (np.random.rand(num_features) - 0.5) * 2
         lr_fmin_result = fmin(f=self.lr_loss, x0=w, fprime=self.lr_gradient, args=(X, y, lambda_), maxiter=50, disp=False)
         return lr_fmin_result

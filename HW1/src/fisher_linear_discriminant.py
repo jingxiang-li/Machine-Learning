@@ -1,11 +1,9 @@
-# Fisher's linear discriminant analysis
-
 import numpy as np
 import scipy as sp
 from numpy import mat
-
 from data_preprocessor import Data_Preprocessor
 from classifier import Classifier
+from scipy.sparse.linalg import eigs
 
 
 class Fisher_Projection (Classifier):
@@ -49,9 +47,9 @@ class Fisher_Projection (Classifier):
         between_class_variance = self.calc_between_class_variance(X, y)
         within_class_variance = self.calc_within_class_variance(X, y)
         tmp_matrix = mat(np.linalg.inv(within_class_variance)) * mat(between_class_variance)
-        w, v = np.linalg.eig(tmp_matrix)
-        # print(w[0:(self.y_vals.size - 1)])
-        return v[:, 0:(self.y_vals.size - 1)].real
+        w, v = eigs(tmp_matrix, k=self.y_vals.size - 1)
+        # print(w.real)
+        return v.real
 
 
 # print("Reading data now ...")
