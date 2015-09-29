@@ -1,0 +1,57 @@
+#!/usr/bin/python3
+
+from multivariate_gaussian import Multivariate_Gaussian
+from cross_validation import n_fold_cv
+import sys
+import os.path
+import numpy as np
+
+
+def read_file(filename):
+    assert os.path.isfile(filename)
+    print("Loading", filename)
+    # filename_binary = filename.replace('csv', 'npy')
+    # if not os.path.isfile(filename_binary):
+    #     data = np.genfromtxt(filename, delimiter=",", skip_header=0)
+    #     np.save(filename_binary, data)
+    # else:
+    #     data = np.load(filename_binary)
+    data = np.genfromtxt(filename, delimiter=",", skip_header=0)
+    print("Successfully Loaded", filename)
+    print("")
+    return data
+
+
+def Fisher(filename, crossval):
+    crossval = int(crossval)
+    data = read_file(filename)
+    X = data[:, 1:]
+    y = data[:, 0].astype(int)
+    test_error, train_error = n_fold_cv(X, y, Multivariate_Gaussian, crossval, 1)
+    print("")
+    print("Test Error:")
+    print(test_error)
+    print("Mean of Test Error:", np.mean(test_error))
+    print("Std of Test Error:", np.std(test_error))
+    print("")
+    print("Training Error:")
+    print(train_error)
+    print("Mean of Training Error:", np.mean(train_error))
+    print("Std of Training Error:", np.std(train_error, ddof=1))
+    print("")
+
+
+def main(argv=sys.argv):
+    # if len(argv) == 1:
+    #     file_name = 'data_MNIST.npy'
+    #     Fisher(file_name, 10)
+    # el
+    if len(argv) == 3:
+        Fisher(*argv[1:])
+    else:
+        print('Usage: Fisher filename crossval', sep=' ', end='\n', file=sys.stderr, flush=False)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

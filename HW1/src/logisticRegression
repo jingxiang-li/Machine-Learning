@@ -1,0 +1,48 @@
+#!/usr/bin/python3
+
+from logistic_regression import Logistic_Regression
+from cross_validation import fancy_cv
+import sys
+import os.path
+import numpy as np
+
+
+def read_file(filename):
+    assert os.path.isfile(filename)
+    print("")
+    print("Loading", filename)
+    data = np.genfromtxt(filename, delimiter=",", skip_header=0)
+    print("Successfully Loaded", filename)
+    print("")
+    return data
+
+
+def logisticRegression(filename, num_splits, train_percent=np.array([5, 10, 15, 20, 25, 30])):
+    num_splits = int(num_splits)
+    data = read_file(filename)
+    X = data[:, 1:]
+    y = data[:, 0].astype(int)
+    test_error = fancy_cv(X, y, Logistic_Regression, num_splits, train_percent, [1])
+    test_error_mean = np.mean(test_error, axis=0)
+    test_error_std = np.std(test_error, axis=0, ddof=1)
+    print("")
+    print("Train Percent:")
+    print(train_percent)
+    print("Test Error:")
+    print(test_error)
+    print("Mean of Test Error:")
+    print(test_error_mean)
+    print("Std of Test Error:")
+    print(test_error_std)
+
+
+def main(argv=sys.argv):
+    if len(argv) == 3:
+        logisticRegression(*argv[1:])
+    else:
+        print('Usage: logisticRegression filename num_splits', sep=' ', end='\n', file=sys.stderr, flush=False)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
