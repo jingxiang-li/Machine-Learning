@@ -49,7 +49,7 @@ def main(argv=sys.argv):
     if len(argv) == 3:
         Fisher(*argv[1:])
     else:
-        print('Usage: Fisher filename crossval', sep=' ', end='\n', file=sys.stderr, flush=False)
+        print('Usage: ./Fisher /path/to/dataset.csv crossval', file=sys.stderr)
         sys.exit(1)
 
 

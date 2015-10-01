@@ -40,7 +40,7 @@ def main(argv=sys.argv):
     if len(argv) == 3:
         naiveBayesGaussian(*argv[1:])
     else:
-        print('Usage: naiveBayesGaussian filename num_splits', sep=' ', end='\n', file=sys.stderr, flush=False)
+        print('Usage: ./naiveBayesGaussian /path/to/dataset.csv num_splits', file=sys.stderr)
         sys.exit(1)
 
 
