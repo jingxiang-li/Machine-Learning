@@ -39,4 +39,8 @@ __pycache__/
 *~
 
 # R
-.Rhistory
+*.Rhistory
+
+# tar
+*.tar
+*.tar.gz
