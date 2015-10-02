@@ -23,6 +23,8 @@
 *.out
 *.synctex.gz
 *.fdb_latexmk
+*.bcf
+*.run.xml
 
 # python
 __pycache__/
