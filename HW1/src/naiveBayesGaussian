@@ -37,10 +37,12 @@ def naiveBayesGaussian(filename, num_splits, train_percent=np.array([5, 10, 15, 
 
 
 def main(argv=sys.argv):
-    if len(argv) == 3:
-        naiveBayesGaussian(*argv[1:])
+    if len(argv) == 4:
+        train_percent_str = argv[3]
+        train_percent = np.array(train_percent_str.split(), dtype=int)
+        naiveBayesGaussian(argv[1], argv[2], train_percent)
     else:
-        print('Usage: ./naiveBayesGaussian /path/to/dataset.csv num_splits', file=sys.stderr)
+        print('Usage: ./naiveBayesGaussian /path/to/dataset.csv num_splits train_percent', file=sys.stderr)
         sys.exit(1)
 
 

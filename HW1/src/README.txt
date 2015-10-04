@@ -17,12 +17,6 @@ Requirements for running python scripts:
     scipy 0.16.0
     matplotlib 1.4.3 (optional, only for 'plot_naivebayes_logreg.py')
 
-To run the scripts, use the following commands in the terminal
-    ./Fisher /path/to/dataset.csv crossval
-    ./SqClass /path/to/dataset.csv crossval
-    ./naiveBayesGaussian /path/to/dataset.csv num_splits
-    ./logisticRegression /path/to/dataset.csv num_splits
-
 Requirements for the dataset:
     1. Must be in .csv format
     2. Header is not allowed in the dataset
@@ -30,3 +24,15 @@ Requirements for the dataset:
     4. The first column should be the indicator of classes
     5. Missing value is not allowed in the dataset
     6. Logistic Regression in this project only supports two-class problems
+
+To run the scripts, use the following commands in the terminal
+    ./Fisher /path/to/dataset.csv crossval
+        Example: ./Fisher ../res/MNIST-1378.csv 10
+    ./SqClass /path/to/dataset.csv crossval
+        Example: ./SqClass ../res/MNIST-1378.csv 10
+    ./naiveBayesGaussian /path/to/dataset.csv num_splits train_percent
+        Example: ./naiveBayesGaussian ../res/spam.csv 100 "5 10 15 20 25 30"
+    ./logisticRegression /path/to/dataset.csv num_splits train_percent
+        Example: ./logisticRegression ../res/spam.csv 100 "5 10 15 20 25 30"
+
+
