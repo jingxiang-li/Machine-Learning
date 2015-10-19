@@ -44,3 +44,6 @@ __pycache__/
 # tar
 *.tar
 *.tar.gz
+
+# sublime text
+*.sublime-*
