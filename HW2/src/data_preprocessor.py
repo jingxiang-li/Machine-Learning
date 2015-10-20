@@ -3,9 +3,10 @@ import numpy as np
 
 
 class Data_Preprocessor:
-    def __init__(self, X):
+    def __init__(self, X, if_add_intercept=True):
         X = np.copy(X)
         self.num_obs, self.num_features = X.shape
+        self.if_add_intercept = if_add_intercept
         X = self.remove_zero_variance_features(X)
         X = self.standardize(X)
 
@@ -27,5 +28,6 @@ class Data_Preprocessor:
         assert (X.shape[1] == self.num_features)
         X = X[:, self.valid_col_index]
         X = (X - self.mean_array) / self.std_array
-        X = self.add_intercept(X)
+        if self.if_add_intercept:
+            X = self.add_intercept(X)
         return X

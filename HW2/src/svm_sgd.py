@@ -1,7 +1,5 @@
 """Summary"""
-import numpy as np
-import scipy as sp
-from numpy import mat, array, zeros, repeat, dot, unique
+from numpy import mat, array, zeros, repeat, dot, unique, genfromtxt, minimum, maximum
 from numpy.random import choice
 from math import sqrt
 from data_preprocessor import Data_Preprocessor
@@ -63,8 +61,10 @@ def update_weight(X, y, weight, para_lambda, k, iter_num):
     """
     eta = 1 / (para_lambda * iter_num)  # step size
     weight_half = (1 - eta * para_lambda) * weight + eta / k * dot(y, X)
-    weight_new = np.minimum(1, 1 / sqrt(para_lambda) /
-                            sqrt(sum(weight_half ** 2))) * weight_half
+    if sum(weight_half ** 2) < 1e-07:
+        weight_half = maximum(weight_half, 1e-04)
+    weight_new = minimum(1, 1 / sqrt(para_lambda) /
+                         sqrt(sum(weight_half ** 2))) * weight_half
     return weight_new
 
 
@@ -74,7 +74,7 @@ def calc_loss_function(X, y, weight):
     loss = sum(tmp_loss[tmp_loss > 0]) / n
     return loss
 
-data_MNIST = np.genfromtxt('../res/MNIST-13.csv', delimiter=',')
+data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
 X = data_MNIST[:, 1:]
 data_preprocessor = Data_Preprocessor(X)
 X = data_preprocessor.predict(X)
@@ -86,14 +86,13 @@ y[y == y_vals[1]] = 1
 n, p = X.shape
 para_lambda = 1
 weight = initialize_weight(p, para_lambda)
-k = 50
+k = 20
 
 for i in range(1, 10000):
     X_work, y_work = select_workset(X, y, weight, k)
-    print(calc_loss_function(X, y, weight))
     weight_new = update_weight(X_work, y_work, weight, para_lambda, k, i)
-    if sqrt(sum((weight_new - weight) ** 2)) < 0.001:
+    print(calc_loss_function(X, y, weight_new))
+    if sum((weight_new - weight) ** 2) < 0.01:
         break
     else:
         weight = weight_new
-
