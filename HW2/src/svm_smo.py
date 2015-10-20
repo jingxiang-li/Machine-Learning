@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import mat, array, zeros, repeat, dot, unique, genfromtxt, minimum, sum, copy, maximum
-from numpy.random import choice, permutation
+from numpy.random import choice, permutation, uniform
 from math import sqrt, fabs
 from data_preprocessor import Data_Preprocessor
 
@@ -20,6 +20,11 @@ def get_output(x_new, alpha_array, X, y):
 
 def calc_objective(alpha_array, X, y):
     K = dot(X, X.T)
+    signed_y = y * alpha_array
+    return sum(alpha_array) - 0.5 * dot(dot(signed_y, K), signed_y)
+
+
+def calc_objective_fast(alpha_array, y, K):
     signed_y = y * alpha_array
     return sum(alpha_array) - 0.5 * dot(dot(signed_y, K), signed_y)
 
@@ -143,27 +148,40 @@ def examine_example(i2, alpha_array, X, y, C):
 
 def train_svm(X, y, C):
     n, p = X.shape
+    K = dot(X, X.T)
     alpha_array = zeros(n)
     num_changed = 0
     examine_all = True
 
-    iter_max = 1
-    while iter_max > 0 and (num_changed > 0 or examine_all):
-        iter_max -= 1
+    iter_max = 100
+    while num_changed > 0 or examine_all:
         num_changed = 0
 
         if examine_all:
             alpha_index = permutation(range(n))
             for i2 in alpha_index:
-                num_changed += examine_example(i2, alpha_array, X, y, C)
+                if examine_example(i2, alpha_array, X, y, C):
+                    num_changed += 1
+                    print(calc_objective_fast(alpha_array, y, K))
+                    print(calc_loss(alpha_array, X, y))
+                    iter_max -= 1
+                    if iter_max < 0:
+                        break
+            if iter_max < 0:
+                break
         else:
             alpha_index_nonbound = [i for i in range(n)
                                     if alpha_array[i] != 0 and alpha_array[i] != C]
             alpha_index_nonbound = permutation(alpha_index_nonbound)
             for i2 in alpha_index_nonbound:
-                num_changed += examine_example(i2, alpha_array, X, y, C)
-
-        print(calc_loss(alpha_array, X, y))
+                if examine_example(i2, alpha_array, X, y, C):
+                    num_changed += 1
+                    print(calc_objective(alpha_array, X, y))
+                    iter_max -= 1
+                    if iter_max < 0:
+                        break
+            if iter_max < 0:
+                break
 
         if examine_all:
             examine_all = False
@@ -185,5 +203,3 @@ y = array(y, dtype=int)
 n, p = X.shape
 C = 1
 alpha_array = train_svm(X, y, C)
-
-print(permutation(range(5)))
