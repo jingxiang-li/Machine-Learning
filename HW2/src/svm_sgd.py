@@ -1,4 +1,4 @@
-""" This file contains class SVM_SGD which implements the Pegasos algorithm for training linear SVM.
+"""This file contains class SVM_SGD which implements the Pegasos algorithm for training linear SVM.
 
     Jingxiang Li
     Tue 20 Oct 2015 11:18:16 PM CDT
@@ -11,7 +11,7 @@ from classifier import Classifier
 
 
 class SVM_SGD (Classifier):
-    """ class SVM_SGD which implements the Pegasos algorithm for training linear SVM
+    """class SVM_SGD which implements the Pegasos algorithm for training linear SVM
 
     Attributes:
         data_preprocessor (Data_Preprocessor): a Data_Preprocessor instance
@@ -46,7 +46,7 @@ class SVM_SGD (Classifier):
             output (int, optional): Description
 
         Returns:
-            numpy.array: prediction class
+            numpy.array: vector of prediction class
         """
         X = self.data_preprocessor.predict(X)
         predicted_score = self.predict_score(X)
@@ -207,6 +207,7 @@ class SVM_SGD (Classifier):
         loss = sum(tmp_loss[tmp_loss > 0]) / n + \
             para_lambda / 2 * dot(weight, weight)
         return loss
+
 
 data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
 X = data_MNIST[:, 1:]
