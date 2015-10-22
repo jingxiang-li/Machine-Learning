@@ -253,11 +253,14 @@ class SVM_SMO (Classifier):
                 a2 = H
         else:
             alpha_array[i2] = L
+            alpha_array[i1] = alpha1 + s * (alpha2 - L)
             Lobj = self.calc_objective_fast(alpha_array, X, y, K)
-            alpha_array[i2] = alpha2
 
             alpha_array[i2] = H
+            alpha_array[i1] = alpha1 + s * (alpha2 - H)
             Hobj = self.calc_objective_fast(alpha_array, X, y, K)
+
+            alpha_array[i1] = alpha1
             alpha_array[i2] = alpha2
 
             if Lobj > Hobj + eps:
