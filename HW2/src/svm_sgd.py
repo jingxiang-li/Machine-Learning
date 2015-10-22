@@ -209,11 +209,9 @@ class SVM_SGD (Classifier):
         return loss
 
 
-data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
-X = data_MNIST[:, 1:]
-y = data_MNIST[:, 0]
-para_lambda = 1
-k = 2000
-model = SVM_SGD(X, y, para_lambda, k)
-print(model.loglist)
-print(sum(model.predict(X) == y) / y.size)
+# data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
+# X = data_MNIST[:, 1:]
+# y = data_MNIST[:, 0]
+# model = SVM_SGD(X, y, 1, 5)
+# print(model.loglist)
+# print(model.validate(X, y))

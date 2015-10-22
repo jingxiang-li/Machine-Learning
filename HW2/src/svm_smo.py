@@ -323,7 +323,7 @@ class SVM_SMO (Classifier):
                 if i1 >= 0 and self.take_step(i1, i2, alpha_array, X, y, C, b, K):
                     return True
 
-                # iterate over all nonbound alphas
+                # iterate over all nonbound alphas using random start index
                 start_index = choice(len(alpha_index_nonbound), 1)
                 alpha_index_nonbound_modified = concatenate(
                     (alpha_index_nonbound[start_index:],
@@ -332,12 +332,12 @@ class SVM_SMO (Classifier):
                     if self.take_step(i1, i2, alpha_array, X, y, C, b, K):
                         return True
 
-            # iterate over all alphas
+            # iterate over all alphas using random start index
             start_index = choice(n, 1)
             alpha_index_modified = concatenate(
                 (arange(start_index, n),
                  arange(start_index, 2)))
-            for i1 in range(n):
+            for i1 in alpha_index_modified:
                 if self.take_step(i1, i2, alpha_array, X, y, C, b, K):
                     return True
 
@@ -392,6 +392,7 @@ class SVM_SMO (Classifier):
                 if iter_max < 0:
                     break
 
+            # stop if the number of changed alphas are less than n / 10
             if num_changed < n / 10:
                 break
 
