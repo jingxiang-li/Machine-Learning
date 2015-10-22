@@ -48,7 +48,8 @@ def mysmosvm(filename, numruns):
     log_list = []
 
     for i in range(numruns):
-        print("Training model ", i + 1, "/", numruns, ", please wait...", end="\r")
+        print("Training model ", i + 1, "/",
+              numruns, ", please wait...", end="\r")
         begin = time.time()
         model = SVM_SMO(X, y, C, iter_max)
         log_list.append(model.loglist)
@@ -84,7 +85,8 @@ def main(argv=sys.argv):
     if len(argv) == 3:
         mysmosvm(*argv[1:])
     else:
-        print('Usage: python3 ./mysmosvm.py /path/to/dataset.csv numruns', file=sys.stderr)
+        print('Usage: python3 ./mysmosvm.py /path/to/dataset.csv numruns',
+              file=sys.stderr)
         sys.exit(1)
 
 

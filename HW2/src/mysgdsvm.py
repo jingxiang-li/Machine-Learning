@@ -68,8 +68,10 @@ def mysgdsvm(filename, k, numruns):
 
     print()
     print()
-    print("Avg runtime for ", numruns, " runs with minibatch size of ", k, ":\t", round(time_avg, 1), " sec.")
-    print("Std runtime for ", numruns, " runs with minibatch size of ", k, ":\t", round(time_std, 1), " sec.")
+    print("Avg runtime for ", numruns, " runs with minibatch size of ",
+          k, ":\t", round(time_avg, 1), " sec.")
+    print("Std runtime for ", numruns, " runs with minibatch size of ",
+          k, ":\t", round(time_std, 1), " sec.")
     print("Plot data exported to ./tmp.txt")
 
     return
