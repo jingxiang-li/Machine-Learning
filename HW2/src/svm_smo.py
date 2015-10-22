@@ -3,7 +3,7 @@
     Jingxiang Li
     Wed 21 Oct 2015 12:08:09 AM CDT
 """
-from numpy import mat, array, zeros, repeat, dot, unique, genfromtxt, minimum, sum, copy, maximum, argmax, fabs
+from numpy import mat, array, zeros, repeat, dot, unique, genfromtxt, minimum, sum, copy, maximum, argmax, fabs, concatenate, arange
 from numpy.random import choice, permutation, uniform
 from math import sqrt
 from data_preprocessor import Data_Preprocessor
@@ -11,7 +11,7 @@ from classifier import Classifier
 
 
 class SVM_SMO (Classifier):
-    """claa SVM_SMO which implements the SMO algorithm for training (linear) SVM
+    """class SVM_SMO which implements the SMO algorithm for training (linear) SVM
 
     Attributes:
         data_preprocessor (Data_Preprocessor): a Data_Preprocessor instance
@@ -179,7 +179,7 @@ class SVM_SMO (Classifier):
         index = argmax(fabs(E1_array - E2[0]))
         return alpha_index_nonbound[index]
 
-    def update_b(self, b_old, alpha1, alpha2, a1, a2, x1, x2, y1, y2, E1, E2):
+    def update_b(self, b_old, alpha1, alpha2, a1, a2, x1, x2, y1, y2, E1, E2, C):
         """update the threshold parameter b
 
         Args:
@@ -228,7 +228,7 @@ class SVM_SMO (Classifier):
         if i1 == i2:
             return False
 
-        eps = 1e-07
+        eps = 1e-05
         alpha1, alpha2 = alpha_array[[i1, i2]]
         y1, y2 = y[[i1, i2]]
         X1, X2 = X[[i1, i2]]
@@ -280,7 +280,7 @@ class SVM_SMO (Classifier):
         # update b
         b_old = b[0]
         b_new = self.update_b(b_old, alpha1, alpha2, a1,
-                              a2, X1, X2, y1, y2, E1, E2)
+                              a2, X1, X2, y1, y2, E1, E2, C)
         b[0] = b_new[0]
 
         alpha_array[i1] = a1
@@ -324,13 +324,19 @@ class SVM_SMO (Classifier):
                     return True
 
                 # iterate over all nonbound alphas
-                # alpha_index_nonbound = permutation(alpha_index_nonbound)
-                for i1 in alpha_index_nonbound:
+                start_index = choice(len(alpha_index_nonbound), 1)
+                alpha_index_nonbound_modified = concatenate(
+                    (alpha_index_nonbound[start_index:],
+                     alpha_index_nonbound[0:start_index]))
+                for i1 in alpha_index_nonbound_modified:
                     if self.take_step(i1, i2, alpha_array, X, y, C, b, K):
                         return True
 
             # iterate over all alphas
-            # alpha_index = permutation(range(n))
+            start_index = choice(n, 1)
+            alpha_index_modified = concatenate(
+                (arange(start_index, n),
+                 arange(start_index, 2)))
             for i1 in range(n):
                 if self.take_step(i1, i2, alpha_array, X, y, C, b, K):
                     return True
@@ -386,19 +392,22 @@ class SVM_SMO (Classifier):
                 if iter_max < 0:
                     break
 
+            if num_changed < n / 10:
+                break
+
             if examine_all:
                 examine_all = False
             elif num_changed == 0:
                 examine_all = True
+
         return (alpha_array, b)
 
 
-data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
-X = data_MNIST[:, 1:]
-y = data_MNIST[:, 0]
-C = 1
-iter_max = 200
-model = SVM_SMO(X, y, C, iter_max)
-print(model.loglist)
-print(model.validate(X, y))
-print(sum(model.predict(X) == y) / y.size)
+# data_MNIST = genfromtxt('../res/MNIST-13.csv', delimiter=',')
+# X = data_MNIST[:, 1:]
+# y = data_MNIST[:, 0]
+# model = SVM_SMO(X, y, 1, 2000)
+# print(model.loglist)
+# print(model.validate(X, y))
+# yhat = model.get_output(model.X, model.alpha_array, model.X, model.y, model.b)
+# print(sum(model.y * yhat > 1))
