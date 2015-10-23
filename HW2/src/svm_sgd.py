@@ -29,6 +29,7 @@ class SVM_SGD (Classifier):
             para_lambda (float): regularization parameter
             k (int): maximum training sample size for each iteration
         """
+        assert k > 0
         self.data_preprocessor = Data_Preprocessor(X)
         X = self.data_preprocessor.predict(X)
         y = copy(y)
@@ -70,32 +71,6 @@ class SVM_SGD (Classifier):
         prediction_error = self.calc_predict_error(predicted_class, y)
         return prediction_error
 
-    def calc_weight(self, X, y, para_lambda, k):
-        """estimate the weight vector given X, y, para_lambda and k
-
-        Args:
-            X (numpy.array): Design Matrix
-            y (numpy.array): Response Vector
-            para_lambda (float): regularization parameter
-            k (int): maximum training sample size for each iteration
-
-        Returns:
-            numpy.array: the trained weight vector
-        """
-        n, p = X.shape
-        weight = self.initialize_weight(p, para_lambda)
-        for i in range(1, 10000):
-            X_work, y_work = self.select_workset(X, y, weight, k)
-            self.loglist.append(self.calc_loss_function(
-                X, y, weight, para_lambda))
-            weight_new = self.update_weight(
-                X_work, y_work, weight, para_lambda, k, i)
-            if sum((weight_new - weight) ** 2) < 0.01:
-                break
-            else:
-                weight = weight_new
-        return weight
-
     def predict_score(self, X):
         """calculate prediction score for new Design Matrix X
 
@@ -132,6 +107,32 @@ class SVM_SGD (Classifier):
             [predicted_class[i] == y[i] for i in range(0, y.size)])
         return 1 - sum(predicted_indicator) / y.size
 
+    def calc_weight(self, X, y, para_lambda, k):
+        """estimate the weight vector given X, y, para_lambda and k
+
+        Args:
+            X (numpy.array): Design Matrix
+            y (numpy.array): Response Vector
+            para_lambda (float): regularization parameter
+            k (int): maximum training sample size for each iteration
+
+        Returns:
+            numpy.array: the trained weight vector
+        """
+        n, p = X.shape
+        weight = self.initialize_weight(p, para_lambda)
+        for i in range(1, 10000):
+            X_work, y_work = self.select_workset(X, y, weight, k)
+            self.loglist.append(self.calc_loss_function(
+                X, y, weight, para_lambda))
+            weight_new = self.update_weight(
+                X_work, y_work, weight, para_lambda, k, i)
+            if sum((weight_new - weight) ** 2) < 0.01:
+                break
+            else:
+                weight = weight_new
+        return weight
+
     def select_workset(self, X, y, weight, k):
         """Select training set for each iteration
 
@@ -145,11 +146,14 @@ class SVM_SGD (Classifier):
             (numpy.array, numpy.array): (X_train, y_train)
         """
         n, p = X.shape
-        index = choice(n, k)
-        X_sub = X[index, :]
-        y_sub = y[index]
-        sub_index = (dot(X_sub, weight) * y_sub) < 1
-        index = index[sub_index]
+
+        index = array([])
+        while index.size == 0:
+            index = choice(n, k)
+            X_sub = X[index, :]
+            y_sub = y[index]
+            sub_index = (dot(X_sub, weight) * y_sub) < 1
+            index = index[sub_index]
         return (X[index, :], y[index])
 
     def initialize_weight(self, p, para_lambda):
