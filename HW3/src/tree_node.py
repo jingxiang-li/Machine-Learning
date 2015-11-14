@@ -240,6 +240,18 @@ class Tree_Node:
         entropy = -sum([p * log(p, 2) for p in probs])
         return entropy
 
+    def show(self):
+        """recursively print the tree in a formatted way
+        """
+        print("depth: ", self.depth, "split_id: ", self.split_id,
+              "split_val: ", self.split_val, "predict_label: ",
+              self.predict_label)
+        if self.left_node is not None:
+            self.left_node.show()
+        if self.right_node is not None:
+            self.right_node.show()
+
+
 # data = genfromtxt('../res/ionoshpere3.txt', delimiter=',')
 # n, p = data.shape
 # X = data[:, 0:(p - 1)]
@@ -248,4 +260,4 @@ class Tree_Node:
 # sample_array = arange(n)
 # num_features = p
 # tree = Tree_Node(X, y, num_features, sample_array, 2)
-# print(sum(tree.predict_class(X) == y) / y.size)
+# tree.show()
