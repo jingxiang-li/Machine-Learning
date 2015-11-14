@@ -26,7 +26,7 @@ def myBagging(X, y, B, k):
     n, p = X.shape
     num_trees = B
     num_features = p
-    sample_size = 30
+    sample_size = int(n * (k - 1) / k)
     depth = 2
     test_error, train_error = n_fold_cv(
         X, y, RandomForest, k, 1, (num_trees, num_features, sample_size, depth))

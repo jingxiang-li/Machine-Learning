@@ -6,7 +6,7 @@ Date: Tue 10 Nov 2015 07:39:14 PM CST
 
 from numpy import array, asarray, bincount, count_nonzero, genfromtxt, unique, argsort, zeros_like, sort, sum, percentile, all, arange, argmax, linspace, amin, zeros
 from numpy.random import permutation, choice
-from math import log, floor
+from math import log, floor, ceil
 
 
 class Tree_Node:
@@ -187,9 +187,13 @@ class Tree_Node:
         y_sorted = y[sort_index]
 
         # build potential split index array
-        # split_index_array = array([i for i in range(1, n) if x_sorted[i] != x_sorted[i - 1] and y_sorted[i] != y_sorted[i - 1]])
-        split_index_array = linspace(
-            0, y.size, num=5, endpoint=False, dtype='int')
+        split_index_array = array([i for i in range(1, n)
+                                   if x_sorted[i] != x_sorted[i - 1]
+                                   and y_sorted[i] != y_sorted[i - 1]])
+
+        # split_index_array = linspace(
+        #     0, y.size, num=min(5, ceil(n / 5)), endpoint=False, dtype='int')
+        # split_index_array = split_index_array[1:]
 
         best_split_index = 0
         best_gain = 0
@@ -236,15 +240,12 @@ class Tree_Node:
         entropy = -sum([p * log(p, 2) for p in probs])
         return entropy
 
-data = genfromtxt('../res/ionoshpere3.txt', delimiter=',')
-n, p = data.shape
-X = data[:, 0:(p - 1)]
-y = asarray(data[:, p - 1], dtype='int')
+# data = genfromtxt('../res/ionoshpere3.txt', delimiter=',')
+# n, p = data.shape
+# X = data[:, 0:(p - 1)]
+# y = asarray(data[:, p - 1], dtype='int')
 # n, p = X.shape
 # sample_array = arange(n)
 # num_features = p
 # tree = Tree_Node(X, y, num_features, sample_array, 2)
 # print(sum(tree.predict_class(X) == y) / y.size)
-
-split_index_array = linspace(
-    0, y.size, num=5, endpoint=False, dtype='int')
