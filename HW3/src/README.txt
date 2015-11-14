@@ -15,10 +15,10 @@ Requirements for running python scripts:
 To run the scripts, use the following commands in the terminal:
 
     python3 ./myBagging2.py /path/to/dataset.csv number_of_base_learner num_folds
-        Example: python3 ./myBagging2.py ../res/ionoshpere3.txt 2 5
+        Example: python3 ./myBagging2.py ../res/ionoshpere3.txt [1,2,3] 5
 
     python3 ./myRForest2.py /path/to/dataset.csv number_of_features num_folds
-        Example: python3 ./myRForest2.py ../res/ionoshpere3.txt 2 5
+        Example: python3 ./myRForest2.py ../res/ionoshpere3.txt [1,2,3] 5
 
 ========================================================================
 
