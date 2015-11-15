@@ -1,0 +1,186 @@
+%!TEX program = pdflatex
+%# -*- coding: utf-8 -*-
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt,oneside,a4paper]{article}
+
+%% ------------------------------------------------------
+%% load packages
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false,
+ unicode=true]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{url}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{microtype}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{bbm}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[algoruled, vlined]{algorithm2e}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mono=false]{libertine}
+\usepackage[libertine]{newtxmath}
+\linespread{1.05}
+\setlength{\parskip}{.5\baselineskip}
+% \usepackage[toc,eqno,enum,bib,lineno]{tabfigures}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[figure]{hypcap}
+\usepackage[hypcap]{caption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{grffile}
+%\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+\usepackage{needspace}
+
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{tabu}
+
+\usepackage{verbatim}
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=true,
+    numbers=left,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    mathescape=true
+}
+\lstset{style=mystyle}
+
+% \usepackage[square,numbers,super,comma,sort]{natbib}
+\usepackage[backend=biber, style=nature, sorting=none, isbn=false, url=false, doi=false]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[]{authblk}
+
+%% Class, Exam, Date, etc.
+\newcommand{\class}{CSCI 5525: Machine Learning}
+\newcommand{\term}{Fall 2015}
+\newcommand{\examnum}{Homework 3 Extra}
+\newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
+\newcommand{\hmwkAuthorName}{Jingxiang Li}
+
+\title{\hmwkTitle}
+\author{\hmwkAuthorName}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\lhead{\hmwkAuthorName}
+\chead{}
+\rhead{\hmwkTitle}
+\cfoot{\thepage}
+
+\newcounter{problemCounter}
+\newcounter{subproblemCounter}
+\renewcommand{\thesubproblemCounter}{\alph{subproblemCounter}}
+\newcommand{\problem}[0] {
+    \clearpage
+    \stepcounter{problemCounter}
+    \setcounter{subproblemCounter}{0}
+}
+
+\newcommand{\subproblem}[0] {
+    \stepcounter{subproblemCounter}
+    \noindent{\textbf{\large{Problem \theproblemCounter.\hspace{1pt}\thesubproblemCounter}}}
+    \vspace{\baselineskip}
+    \newline
+}
+
+\newcommand{\solution} {
+    \vspace{15pt}
+    \noindent\ignorespaces\textbf{\large Solution}\par
+}
+\setlength\parindent{0pt}
+
+%% some math shortcuts
+\newcommand{\m}[1]{\texttt{{#1}}}
+\newcommand{\E}[0]{\mathrm{E}}
+\newcommand{\Var}[0]{\mathrm{Var}}
+\newcommand{\sd}[0]{\mathrm{sd}}
+\newcommand{\Cov}[0]{\mathrm{Cov}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\problem
+\subproblem
+The loss function is a non-smooth function of $w$.
+
+\proof Considering the loss function for each instance $i$,
+$$L_{i}(w) = \max(0, -y_{i}w^{T}x_{i})$$
+We have
+\begin{equation*}
+\nabla L_{i}(w) = \left\{ \begin{matrix}
+- y_{i}x_{i} & \mathrm{if} ~~ y_{i}w^{T}x_{i} < 0\\
+0 & \mathrm{otherwise}
+\end{matrix}
+\right.
+\end{equation*}
+Note that the gradient of $L(w)$ suddenly change at the hinge point, which suggests that $L_{i}$ is not a smooth function.
+
+Notice that the original loss function is simply the sum over $L_{i},~i=1,\dots,n$
+$$\sum_{i = 1}^{n}\max(0, -y_{i}w^{T}x_{i}) = \sum_{i = 1}^{n}L_{i}(w)$$
+since $L_{i}$ is a non-smooth function of $w$, the original loss function is not smooth, either.
+
+Q.E.D.
+\newline
+\newline
+
+\subproblem
+Given $\eta =  1$, the update equation of weight vector $w$ for the perceptron algorithm is
+$$w_{t + 1} = w_{t} + \mathbbm{1}(y_{i}w_{t}^{T}x_{i} < 0)y_{i}x_{i}$$
+where $\mathbbm{1}$ is the $\left\{0, 1\right\}$ indicator function, and $\mathbbm{1}(y_{i}w_{t}^{T}x_{i} < 0)$ equals to 1 when the algorithm makes a mistake on instance $\left(y_{i}, ~x_{i}\right)$ given $w_{t}$ as the weight vector. On convergence, since $w_{0}$ is 0, we will have
+$$\hat{w} = \sum_{i = 1}^{n}\alpha_{i}y_{i}x_{i}$$
+where
+$$\alpha_{i} = \sum_{t \in S}{\mathbbm{1}(y_{i}w_{t}^{T}x_{i} < 0)}, ~~ S = \left\{t ~ | ~ \left(y_{i}, ~x_{i}\right) ~ \mathrm{is ~ used ~ for ~ updating} ~ w_{t} \right\}$$
+i.e. $\alpha_{i}$ is the number of mistakes made by the perceptron algorithm on $(y_{i}, x_{i})$ before convergence.
+
+Q.E.D.
+\clearpage
+
+\subproblem
+Here we design a SGD algorithm which will converge even in the non-seperable setting as follows
+
+\begin{enumerate}
+\item Initialize step-size $\eta_{0}$
+\item Set $w_{0} = 0, ~ \eta_{t} = \frac{\eta_{0}}{\sqrt{t}}$
+\item For $t = 1, \dots, T$
+\item \hspace{2ex} Randomly draw $i \in \{ 1, 2, \dots, n \}$
+\item \hspace{2ex} Compute (sub)gradient $g_{t} = -\mathbbm{1}(y_{i}w_{t}^{T}x_{i} < 0)y_{i}x_{i}$
+\item \hspace{2ex} Update: $w_{t + 1} = w_{t} - \eta_{t} g_{t}$
+\item Output $\bar{w}_{T} = \frac{1}{T}\sum_{t = 1}^{T}w_{t}$
+\end{enumerate}
+
+To ensure the convergence of the algorithm, we use decaying step-size $\eta_{t} = \frac{\eta_{0}}{\sqrt{t}}$. In this way the step-size decreases as $t$ increases, and the algorithm will guarantee convergence when $\eta_{t}$ becomes negligible.
+
+Since this is a SGD algorithm, and the loss function for this perceptron problem is in the form
+$$\min_{w}f(w) = \frac{1}{n}\sum_{i = 1}^{n}l((x_{i}, y_{i}), w) = \frac{1}{n}\sum_{i = 1}^{n}\max(0, -y_{i}w^{T}x_{i})$$
+we have $\epsilon = \mathrm{E}[f(\bar{w}_{T})] - f(w^{*}) \leq O(\frac{1}{\sqrt{T}})$, which implies that the iteration complexity is $T = O(\frac{1}{\epsilon^2})$. Since in each iteration the above SGD algorithm considers only 1 sample, i.e. for each iteration the complexity of the algorithm is $O(1)$, then the overall complexity of the SGD algorithm will be $O(\frac{1}{\epsilon^2})$. The expected rate of convergence of the algorithm is $O(\frac{1}{\epsilon^2})$
+
+\end{document}
+
