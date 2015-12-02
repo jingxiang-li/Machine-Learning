@@ -25,6 +25,7 @@
 *.fdb_latexmk
 *.bcf
 *.run.xml
+*.fls
 
 # python
 __pycache__/
