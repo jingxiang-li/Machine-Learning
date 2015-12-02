@@ -1,0 +1,301 @@
+%!TEX program = pdflatex
+%# -*- coding: utf-8 -*-
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt,oneside,a4paper]{article}
+
+%% ------------------------------------------------------
+%% load packages
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false,
+ unicode=true]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{url}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{microtype}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{bm}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[algoruled, vlined]{algorithm2e}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mono=false]{libertine}
+\usepackage[libertine]{newtxmath}
+\linespread{1.05}
+\setlength{\parskip}{.5\baselineskip}
+% \usepackage[toc,eqno,enum,bib,lineno]{tabfigures}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[figure]{hypcap}
+\usepackage[hypcap]{caption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{grffile}
+%\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+\usepackage{needspace}
+
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{tabu}
+
+\usepackage{verbatim}
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=true,
+    numbers=left,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    mathescape=true
+}
+\lstset{style=mystyle}
+
+% \usepackage[square,numbers,super,comma,sort]{natbib}
+\usepackage[backend=biber, style=nature, sorting=none, isbn=false, url=false, doi=false]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[]{authblk}
+
+%% Class, Exam, Date, etc.
+\newcommand{\class}{CSCI 5525: Machine Learning}
+\newcommand{\term}{Fall 2015}
+\newcommand{\examnum}{Homework 4}
+\newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
+\newcommand{\hmwkAuthorName}{Jingxiang Li}
+
+\title{\hmwkTitle}
+\author{\hmwkAuthorName}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\lhead{\hmwkAuthorName}
+\chead{}
+\rhead{\hmwkTitle}
+\cfoot{\thepage}
+
+\newcounter{problemCounter}
+\newcounter{subproblemCounter}
+\renewcommand{\thesubproblemCounter}{\alph{subproblemCounter}}
+\newcommand{\problem}[0] {
+    \clearpage
+    \stepcounter{problemCounter}
+    \setcounter{subproblemCounter}{0}
+}
+
+\newcommand{\subproblem}[0] {
+    \stepcounter{subproblemCounter}
+    \noindent{\textbf{\large{Problem \theproblemCounter.\hspace{1pt}\thesubproblemCounter}}}
+    \vspace{\baselineskip}
+    \newline
+}
+
+\newcommand{\solution} {
+    \vspace{15pt}
+    \noindent\ignorespaces\textbf{\large Solution}\par
+}
+\setlength\parindent{0pt}
+
+%% some math shortcuts
+\newcommand{\m}[1]{\texttt{{#1}}}
+\newcommand{\E}[0]{\mathrm{E}}
+\newcommand{\Var}[0]{\mathrm{Var}}
+\newcommand{\sd}[0]{\mathrm{sd}}
+\newcommand{\Cov}[0]{\mathrm{Cov}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\problem
+\subproblem
+The objective function is defined as
+$$f(w) = h(w) + \lambda g(w) = - \sum_{i = 1}^{N}\left\{y_{i}w^{T}x_{i} - \log(1 + \exp(w^{T}x_{i}))\right\} + \lambda ||w||_{2}^{2}$$
+Note that $h(w)$ is separable, hence we could separate it into m mini-batches of n points each, where $N = mn$. In ADMM each mini-batch maintains its own parameter $w_{h}$, and let $S_{h}$ be the set of points in mini-batch $h$, the objective function becomes
+\begin{equation*}
+\begin{aligned}
+f(w) &= \sum_{h = 1}^{m}{h(w_{h})} + \lambda g(w)\\
+&= -\sum_{h = 1}^{m}\sum_{i \in S_{h}}{\left\{y_{i}w_{h}^{T}x_{i} - \log(1 + \exp(w_{h}^{T}x_{i}))\right\}} + \lambda ||w||_{2}^{2}
+\end{aligned}
+\end{equation*}
+Then we can derive the Augmented Lagrangian of this objective function as follows
+$$L = -\sum_{h = 1}^{m}\sum_{i \in S_{h}}{\left\{y_{i}w_{h}^{T}x_{i} - \log(1 + \exp(w_{h}^{T}x_{i}))\right\}} + \lambda ||w||_{2}^{2} + \sum_{h = 1}^{m}\left\{\left<u_{h}, w_{h} - w\right> + \rho / 2 ||w_{h} - w||_{2}^{2}\right\}$$
+where $u_{h}$ is the Lagrangian multiplier for constraint $w_{h} = w$
+
+Next, we can derive the ADMM updates for this optimization problem
+
+\begin{equation*}
+\begin{aligned}
+&\mathrm{1.}& w_{h}^{k + 1} &= \arg\min_{w_{h}}\sum_{i = S_{h}}\left\{y_{i}w_{h}^{T}x_{i} - \log(1 + \exp(w_{h}^{T}x_{i}))\right\} + \left<u_{h}^{k}, w_{h} - w^{k}\right> + \rho / 2 ||w_{h} - w^{k}||_{2}^{2}\\
+&\mathrm{2.}& w^{k + 1} &= \arg\min_{w} \lambda ||w||_{2}^{2} + \sum_{h = 1}^{m}\left\{\left<u_{h}^{k}, w_{h}^{k + 1} - w \right> + \rho / 2 ||w_{h}^{k + 1} - w||_{2}^{2} \right\}\\
+&\mathrm{3.}& u_{h}^{k + 1} &= u_{h}^{k} + \rho(w_{h}^{k + 1} - w^{k + 1})
+\end{aligned}
+\end{equation*}
+
+\subproblem
+In the ADMM algorithm, step 1 and 3 can be executed in parallel. Because once $w$ is updated, step 1 and step 3 can be done in each mini-batch separately, without any information from other mini-batches.
+
+Step 2 require access to more than one mini-batch, because it needs updated $w_{h}$ from all mini-batches to update $w$.
+
+\subproblem
+Yes, it is a double-loop algorithm. The outer loop is the ADMM updates listed in problem 1.a, and the inner loop is used for solving step 1 and step 2. Step 2 may have explicit solution which does not require iterative solution. However for step 1, which is known as a logistic regression problem, it's almost impossible to directly solve it by simple algebra, suggesting that iterative methods like l-BFGS are necessary for solving step 1. Hence the ADMM must be a double-loop algorithm.
+
+\problem
+\subproblem
+First, I will show $VC(F) \geq d + 1$
+
+To prove $VC(F) \geq d + 1$, it's sufficient to find $d + 1$ points that $F$ is able to shatter. Let's make X as follows:
+\begin{equation*}
+X = \left[
+\begin{matrix}
+0 & 0 & 0 & \cdots & 0 \\
+1 & 0 & 0 & \cdots & 0 \\
+0 & 1 & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1
+\end{matrix}
+\right]_{(d + 1) \times d}
+\end{equation*}
+
+Hence for any response vector $y \in \{-1 , +1\}^{d + 1}$, we can directly solve the equation $Xw + w_{0} = y$, where
+$w = \left[y_{2} - y_{1}, y_{3} - y_{1}, \dots, y_{d + 1} - y_{1}\right]^{T}$ and $w_{0} = y_{1}$. Note that $w^{T}x + w_{0} \in F$, suggesting that there exists a set of points with cardinality $d + 1$ can be shattered by $F$, i.e. $VC(F) \geq d + 1$\newline
+
+Then I will show $VC(F) < d + 2$
+
+Note that we can define $w^{*} = [w_{0}, w]^{T}$, and let $x^{*} = [1, x]^{T}$, then $F = \{f~ : ~f(x) = \mathrm{sign}(\left<w^{*}, x^{*}\right>)\}$. Then for any set of points with cardinality $d + 2$, the design matrix $X^{*}$ will have $d + 2$ rows and $d + 1$ columns, which suggests that rows are linear correlated, i.e. there exists $j$ such that $x^{*}_{j} = \sum_{i \neq j}{a_{i}x_{i}^{*}}$. Then we know that $x^{*}_{j}w^{*} = \sum_{i \neq j}{a_{i}x_{i}^{*T}w^{*}}$, which means the sign of $x^{*}_{j}w^{*}$ is determined by $\sum_{i \neq j}{a_{i}x_{i}^{*T}w^{*}}$. Let $y_{j} = -\mathrm{sign}(\sum_{i \neq j}{a_{i}x_{i}^{*T}w^{*}})$, then $F$ cannot shatter this set of points. Note that this argument holds for any set of points with cardinality $d + 2$, suggesting that $VC(F) < d + 2$\newline
+
+Since $d + 1\leq VC(F) < d + 2$, $VC(F) = d + 1$. Q.E.D.\newline
+
+\subproblem
+Note that the Rademacher complexity is defined as
+$$ R_{n}(F) = \E\left[\sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}f(x_{i}) \right] $$
+where $\rho_{i}, i = 1, 2, \dots, n$ are Rademacher variables takes values +1 and -1 with probability 0.5, respectively.
+
+Then
+\begin{equation*}
+\begin{aligned}
+& & &\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}') - f(x_{i})) \right]\\
+&=& &\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}')) + \frac{1}{n}\sum_{i = 1}^{n}(-\rho_{i})(f(x_{i})) \right]\\
+&\leq& &\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}')) + \sup_{f \in F}\frac{1}{n}\sum_{i = 1}^{n}(-\rho_{i})(f(x_{i})) \right]
+\end{aligned}
+\end{equation*}
+Note that the distributions of $-\rho_{i}$ and $\rho_{i}$ are exactly the same, then
+\begin{equation*}
+\begin{aligned}
+& & &\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}') - f(x_{i})) \right]\\
+&\leq& &\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}')) + \sup_{f \in F}\frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i})) \right]\\
+&=& & \E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}'))\right] + \E\left[\sup_{f \in F}\frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i})) \right]\\
+&=& &2R_{n}(F)
+\end{aligned}
+\end{equation*}
+i.e.
+$$\E\left[ \sup_{f \in F} \frac{1}{n}\sum_{i = 1}^{n}\rho_{i}(f(x_{i}') - f(x_{i})) \right] \leq 2R_{n}(F)$$
+Q.E.D.
+
+\problem
+\subproblem
+For any expert $i = 1, 2, \dots n$, we have
+\begin{equation*}
+\begin{aligned}
+w_{T + 1}(i) &\leq 1 \\
+\frac{w_{T}(i)\beta^{\ell_{T}(i)}}{Z_{T + 1}} &\leq 1\\
+\frac{w_{T - 1}(i)\beta^{\ell_{T - 1}(i) + \ell_{T}(i)}}{Z_{T}Z_{T + 1}} &\leq 1\\
+\frac{w_{1}(i)\beta^{\ell_{1}(i) + \ell_{2}(i) + \dots + \ell_{T}(i)}}{Z_{2}Z_{3}\dots Z_{T + 1}} &\leq 1\\
+\end{aligned}
+\end{equation*}
+Note that $w_{1}(i) = 1 / n$, $i = 1, 2, \dots n$, we have
+\begin{equation*}
+\begin{aligned}
+\beta^{\ell_{1}(i) + \ell_{2}(i) + \dots + \ell_{T}(i)} &\leq n \cdot Z_{2}Z_{3}\dots Z_{T + 1}\\
+\beta^{\ell_{1}(i) + \ell_{2}(i) + \dots + \ell_{T}(i)} &\leq n \cdot \prod_{t = 1}^{T}\sum_{i = 1}^{n}w_{t}(i)\beta^{\ell_{t}(i)}\\
+\end{aligned}
+\end{equation*}
+Since $\beta^{\ell_{t}(i)} \leq 1 - (1 - \beta)\ell_{t}(i)$, we have
+\begin{equation*}
+\begin{aligned}
+\beta^{\ell_{1}(i) + \ell_{2}(i) + \dots + \ell_{T}(i)} &\leq n \cdot \prod_{t = 1}^{T}\sum_{i = 1}^{n}w_{t}(i)[1 - (1 - \beta)\ell_{t}(i)]\\
+\end{aligned}
+\end{equation*}
+Note that $sum_{i = 1}^{n}w_{t}(i) = 1$, then
+\begin{equation*}
+\begin{aligned}
+\beta^{\ell_{1}(i) + \ell_{2}(i) + \dots + \ell_{T}(i)} &\leq n \cdot \prod_{t = 1}^{T}\left\{1 - \sum_{i = 1}^{n}w_{t}(i)[(1 - \beta)\ell_{t}(i)]\right\}\\
+\end{aligned}
+\end{equation*}
+Here we take logarithm on both sides of the inequality
+\begin{equation*}
+\begin{aligned}
+\log(\beta)\sum_{t = 1}^{T}\ell_{t}(i) &\leq \log(n) + \sum_{t = 1}^{T}\log\left(1 - \sum_{i = 1}^{n}(1 - \beta)w_{t}(i)\ell_{t}(i)\right)\\
+\end{aligned}
+\end{equation*}
+Since $\log(1 + x) < x$, we have
+\begin{equation*}
+\begin{aligned}
+\log(\beta)\sum_{t = 1}^{T}\ell_{t}(i) &\leq \log(n) + \sum_{t = 1}^{T}\left(-\sum_{i = 1}^{n}(1 - \beta)w_{t}(i)\ell_{t}(i)\right)\\
+(1 - \beta)\sum_{t = 1}^{T}\sum_{i = 1}^{n}w_{t}(i)\ell_{t}(i) &\leq \log(n) - \log(\beta)\sum_{t = 1}^{T}\ell_{t}(i)\\
+\sum_{t = 1}^{T}\sum_{i = 1}^{n}w_{t}(i)\ell_{t}(i) &\leq \frac{\log(n) + \log(1/\beta)\sum_{t = 1}^{T}\ell_{t}(i)}{1 - \beta}\\
+\sum_{t = 1}^{T}\bm{w}_{t}^{T}\ell_{t} &\leq \frac{\log(n) + \log(1/\beta)\sum_{t = 1}^{T}\ell_{t}(i)}{1 - \beta}\\
+L_{\mathrm{adapt}} &\leq \frac{\log(1 / \beta)}{1 - \beta}\sum_{t = 1}^{T}\ell_{t}(i) + \frac{1}{1 - \beta}\log(n)
+\end{aligned}
+\end{equation*}
+Notice that the above inequality holds for any $i = 1, 2, ..., n$, hence
+\begin{equation*}
+\begin{aligned}
+L_{\mathrm{adapt}} &\leq \frac{\log(1 / \beta)}{1 - \beta} \min_{i}\sum_{t = 1}^{T}\ell_{t}(i) + \frac{1}{1 - \beta}\log(n)\\
+L_{\mathrm{adapt}} &\leq \frac{\log(1 / \beta)}{1 - \beta} \min_{i}L_{i} + \frac{1}{1 - \beta}\log(n)
+\end{aligned}
+\end{equation*}
+Q.E.D.\newline
+
+\subproblem
+If $\min_{i}L_{i} = L_{\mathrm{min}}$ is fixed, then it's intuitive to find $\beta$ that minimizing the upper-bound of $L_{\mathrm{adapt}}$. However, directly minimize the upper-bound derived from problem 3.a is difficult, we first try to further relax the upper-bound. Note that $\log(x) < x - 1$, $\forall x \in (0, \infty)$, then $\log(1 / \beta) < (1 - \beta)/\beta$, and the upper-bound becomes
+$$L_{\mathrm{adapt}} \leq \frac{1}{\beta}L_{\min} + \frac{1}{1 - \beta}\log(n)$$
+Let
+$$f(\beta) = \frac{1}{\beta}L_{\min} + \frac{1}{1 - \beta}\log(n)$$
+it's easy to derive it's derivative
+\begin{equation*}
+\begin{aligned}
+\nabla f(\beta) &= -\frac{1}{\beta^2}L_{\min} + \frac{1}{(\beta - 1)^2}\log(n)\\
+&= \frac{\beta^{2}\log(n) - (\beta - 1)^2 L_{\min}}{(\beta - 1)^2\beta^{2}}
+\end{aligned}
+\end{equation*}
+Let $\nabla f(\beta) = 0$, we have
+$$g(\beta) = \beta^{2}\log(n) - (\beta - 1)^2 L_{\min} = 0$$
+which is a quadratic function of $\beta$. solution of the above equality can be obtained by simple algebra
+\begin{equation*}
+\left\{
+\begin{matrix}
+x_1 = \frac{L_{\min} - \sqrt{L_{\min}\log(n)}}{{L_{\min} - \log(n)}}\\
+x_2 = \frac{L_{\min} + \sqrt{L_{\min}\log(n)}}{{L_{\min} - \log(n)}}\\
+\end{matrix}
+\right.
+\end{equation*}
+Notice that local minimum of $f$ is always achieved at $x_1$. If $\log(n) > L_{\min}$, then $g(\beta)$ is convex and hence local minimum is achieved at the larger root of it, which is $x_1$; on the other hand, if $\log(n) < L_{\min}$, then $g(\beta)$ is concave and hence local minimum is achieved at the smaller root of it, which is still $x_1$. Therefore we can set optimal $\beta^{*}$ to be
+\begin{equation*}
+\beta^{*} = \left\{\begin{matrix}
+1 & \mathrm{if} ~~~\frac{L_{\min} - \sqrt{L_{\min}\log(n)}}{{L_{\min} - \log(n)}} > 1\\
+0 & \mathrm{if} ~~~\frac{L_{\min} - \sqrt{L_{\min}\log(n)}}{{L_{\min} - \log(n)}} < 0\\
+\frac{L_{\min} - \sqrt{L_{\min}\log(n)}}{{L_{\min} - \log(n)}} &\mathrm{otherwise}
+\end{matrix}\right.
+\end{equation*}
+\end{document}
