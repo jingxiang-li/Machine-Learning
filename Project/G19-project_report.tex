@@ -52,6 +52,7 @@
 \usepackage{verbatim}
 
 \usepackage{fancyhdr}
+\pagestyle{fancy}
 \usepackage{extramarks}
 
 \lhead{Zeng, Chen and Li (G19)}
@@ -76,9 +77,16 @@
 \date{}
 
 \begin{document}
-\pagestyle{fancy}
 \maketitle
 
+\begin{abstract}
+Image classification is one of the most classical image processing problem in computer vision. Due to the advances of machine learning, multiple modern classification models have been successfully applied in addressing this problem. Recently, researchers found that Convolutional Neural Network (ConvNet), as a hybrid feed forward artificial network inspired biologically from cat's visual cortex, seem to have superior prediction capability over other commonly used classifiers. It has been shown that, empirically, the accuracy for image recognition is significantly raised by applying ConvNet in many large scale image classification project. In this article, we would like to further evaluate the the performance of ConvNet by comparing it with Random Forest and Gradient Boost in predicting types of ocean planktons. The dataset we use is from one of the Kaggle challenge, known as the National Data Science Bowl. It contains camera images of planktons as input and types of planktons as output. After careful architecture design and implementation, our experiments show that ConvNet achieves overall 95\% prediction accuracy, which is significantly better than the best Random Forest and Gradient Boost can do (both around 85\%). This result supports the advantage of ConvNet in classifying images.
+\end{abstract}
+
+\thispagestyle{empty}
+\clearpage
+
+\setcounter{page}{1}
 \section{Introduction}
 Image classification is one of the most classical image processing problem in computer vision. The target for doing image classification is to predict label or class for any given input image. Multiple higher level applications, for example object detection, face detection and text recognition, are mostly relied on the output of image classification process. The main challenge for image classification is that, unlike a common computer science problem, it is almost impossible for one to hard-code a program for recognizing a picture with more than ten thousand potential labels. In other words, there is no way to construct a static algorithm for doing image classification, and models which are capable to learn patterns from images are needed. This is where machine learning comes in.
 
@@ -88,7 +96,7 @@ Although machine learning techniques can be applied in computer vision, the afor
 
 Convolutional neural network (ConvNet) is a type of feed-forward artificial neural network inspired biologically from cat's visual cortex\cite{hubel1968receptive}. In ConvNet, convolution kernels are applied to the 2D matrices to generate inputs for the next connected layers. By learning parameters for convolution kernels, they are capable to capture the local spatial features of the images, and hence ConvNet is very likely to yield better prediction result for image classification problem. In fact, ConvNet is not a new idea in computer vision, it was first proposed by LeCun\cite{lecun1989generalization} in 1989. The reason it does becomes popular until recent years is that, the complexity of ConvNet is too large. The number of parameters in a common ConvNet could be more than millions, suggesting that huge amount of input images and super-efficient computation techniques are both required for training it. Fortunately, these two challenges are resolved due to the advances of Internet and the highly optimized GPU computation for 2D convolution operations.
 
-In this article we would like to evaluate the performance of ConvNet in image classification, and compare it with Gradient Boosting and Random Forest, which are known as commonly used vector based machine learning approaches. The dataset we use is known as the part of National Data Science Bowl provided by \emph{the Hatfield Marine Science Center at Oregon State University}. It contains images for ocean plankton as input and type of them as output. Our goal is to find the best model to automatically identify ocean plankton given their images. Details for the dataset will be explained in the next section.
+In this article we would like to evaluate the performance of ConvNet in image classification, and compare it with Gradient Boosting and Random Forest, which are known as commonly used vector based machine learning approaches. The dataset we use is known as the part of National Data Science Bowl provided by the Hatfield Marine Science Center at Oregon State University. It contains images for ocean plankton as input and type of them as output. Our goal is to find the best model to automatically identify ocean plankton given their images. Details for the dataset will be explained in the next section.
 
 \section{Data Description and Preprocessing}
 As mentioned, the dataset we use contains images for ocean plankton as input, and types of them as output. There are more than 30,000 images with 121 different labels in the given training set. Since our goal is to evaluate and compare performance of multiple models, we decide to simplify the problem by manually selecting a small number of classes out of 121 and building models based on this mini-dataset. As the result, we select 8 planktons with more than 7,000 images in total for our purpose.
@@ -119,7 +127,7 @@ For vector based models like Random Forest and Gradient Boost, we first augment 
 
 \section{Selected Models for Image Classification}
 \subsection{Convolutional Neural Networks (ConvNet)}
-For training ConvNet we decide to use the SGD algorithm, where the size of mini-batch is chosen to be 32. Convolution kernels used in the network are all with the dimension $3 \times 3$. For Layer activation, we take Rectified Linear Units(ReLU) as our activation function, which is always implemented after each convolution layer. \emph{Dropout} is also adopted for the sake of optimization efficiency and robustness after each max-pooling layer. The activation function for our fully connected is also ReLU. The loss function for the Convolutional Neural Networks is the \emph{soft-max} function, which is the common choice for multi-class classification problem.
+For training ConvNet we decide to use the SGD algorithm, where the size of mini-batch is chosen to be 32. Convolution kernels used in the network are all with the dimension $3 \times 3$. For Layer activation, we take Rectified Linear Units(ReLU) as our activation function, which is always implemented after each convolution layer. Dropout is also adopted for the sake of optimization efficiency and robustness after each max-pooling layer. The activation function for our fully connected is also ReLU. The loss function for the Convolutional Neural Networks is the Soft-max function, which is the common choice for multi-class classification problem.
 
 In order to clearly specify the structure of input and output in ConvNet, we define a 4-dimensional tuple $(n, c, a, b)$ as the notation for the dimension of data in the network, where $n$ is the sample size, $c$ is the number of channels, $a$ is the number of rows of the image, and $b$ the number of columns. For example, in our ConvNet each input image has structure (1, 1, 32, 32). Therefore, using this notation the structure of ConvNet used in our analysis is designed as follows:
 
@@ -164,7 +172,7 @@ For this part, two models for pretraining are considered: Restricted Bolzmann Ma
 In order to make comparisons among the selected models, we use three measures to evaluate their generalization performance, they are: 1. F1-score, 2. Precision, 3. Recall. they are defined as follow:
 $$\mathrm{precision} = \frac{tp}{tp + fp}~~~~~~
 \mathrm{recall} = \frac{{tp}}{{tp + fn}}~~~~~~
-F = 2 \times \frac{\mathrm{precision} \times \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}$$
+F_{1} = 2 \times \frac{\mathrm{precision} \times \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}$$
 where \textit{tp} is the number of true positives, \textit{fp} is the number of false positives, and \textit{fn} is the number of false negatives. We will report them for each type of plankton, and the total accuracy for each model for prediction will also be included.
 
 \section{Prediction Result}
