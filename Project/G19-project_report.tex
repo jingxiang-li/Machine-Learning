@@ -60,7 +60,7 @@
 \rhead{ConvNet for Image Classification}
 \cfoot{\thepage}
 
-\newcommand{\hmwkTitle}{Convolution Neural Network for Image Classificatoin in the Study of Plankton Classification}
+\newcommand{\hmwkTitle}{Convolution Neural Network for Image Classificatoin\\in the Study of Plankton Classification}
 \newcommand{\hmwkAuthorName}{Xihuan Zeng, Rihan Chen and Jingxiang Li (G19)}
 
 \setlength\headheight{15pt}
@@ -252,5 +252,40 @@ maximum depth:    & 6   & 9   & 12  \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+\begin{table}[ht]
+\centering
+\caption{Structure of ConvNet(whole data)}
+\begin{tabular}{lll}
+\hline
+Layer           & Size             & Output             \\ \hline
+input           &                  & (32, 1, 100, 100)  \\
+convolution     & 32 $3 \times 3$ kernels   & (32, 32, 100, 100) \\
+convolution     & 16 $3 \times 3$ kernels   & (32, 16, 100, 100) \\
+max-pooling     & $2 \times 2$, stride 2    & (32, 16, 50, 50)   \\
+dropout         & p=0.25           & (32, 16, 50, 50)   \\
+convolution     & 64 $3 \times 3$ kernels   & (32, 64, 50, 50)   \\
+convolution     & 32 $3 \times 3$ kernels   & (32, 32, 50, 50)   \\
+max-pooling     & $2 \times 2$, stride 2    & (32, 32, 25, 25)   \\
+dropout         & p=0.25           & (32, 32, 25, 25)   \\
+convolution     & 128 $3 \times 3$ kernels  & (32, 128, 25, 25)  \\
+convolution     & 128 $3 \times 3$ kernels  & (32, 128, 25, 25)  \\
+convolution     & 64 $3 \times 3$ kernels   & (32, 64, 25, 25)   \\
+max-pooling     & $2 \times 2$, stride 2    & (32, 64, 12, 12)   \\
+dropout         & p=0.25           & (32, 64, 12, 12)   \\
+convolution     & 256 $3 \times 3$ kernels  & (32, 256, 12, 12)  \\
+convolution     & 256 $3 \times 3$ kernels  & (32, 256, 12, 12)   \\
+convolution     & 128 $3 \times 3$ kernels  & (32, 128, 12, 12)  \\
+max-pooling     & $2 \times 2$, stride 2    & (32, 128, 6, 6)    \\
+dropout         & p=0.25           & (32, 128, 6, 6)    \\
+fully connected & 512 hidden units & (32, 512)          \\
+dropout         & p=0.5            & (32, 512)          \\
+fully connected & 256 hidden units & (32, 256)          \\
+dropout         & p=0.5            & (32, 256)          \\
+fully connected & 121 way soft-max & (32, 121)          \\ \hline
+\end{tabular}
+\end{table}
+
 
 \end{document}
