@@ -102,7 +102,7 @@ Convolutional neural network (ConvNet) is a type of feed-forward artificial neur
 In this article we would like to evaluate the performance of ConvNet in image classification, and compare it with Gradient Boosting and Random Forest, which are known as commonly used vector based machine learning approaches. The dataset we use is known as the part of National Data Science Bowl provided by the Hatfield Marine Science Center at Oregon State University. It contains images for ocean plankton as input and type of them as output. Our goal is to find the best model to automatically identify ocean plankton given their images. Details for the dataset will be explained in the next section.
 
 \section{Data Description and Preprocessing}
-As mentioned, the dataset we use contains images for ocean plankton as input, and types of them as output. There are more than 30,000 images with 121 different labels in the given training set. Since our goal is to evaluate and compare performance of multiple models, we decide to simplify the problem by manually selecting a small number of classes out of 121 and building models based on this mini-dataset. As the result, we select 8 planktons with more than 7,000 images in total for our purpose.
+As mentioned, the dataset we use contains images for ocean plankton as input, and types of them as output. There are more than 30,000 images with 121 different labels in the given training set. Since our goal is to evaluate and compare performance of multiple models, we decide to simplify the problem by manually selecting a small number of classes out of 121 and building models based on this mini-dataset. As the result, we select 8 planktons with more than 7,000 images in total for our purpose. The data we use in our analysis have been summarized in table \ref{sample from dataset}.
 
 The inputs are gray scaled pictures obtained using camera and already processed by a segmentation algorithm. Thus each image only contains one individual plankton, and is completely isolated from others. In the training set, the size of images varies from $40 \times 40$ to $400 \times 400$, hence image preprocessing is necessary to at least normalize inputs into the same size. Due to our poor computational environment, we calibrate all images to $32 \times 32$ for further processing.
 
@@ -111,7 +111,7 @@ The inputs are gray scaled pictures obtained using camera and already processed 
 \small
 \caption{Sample Augmentation Strategies}
 \begin{tabular}{ll}
-\toprule
+ \toprule
  Transformation & Strategy\\
  \midrule
  horizontal flip & yes or no with probability 0.5\\
@@ -124,9 +124,9 @@ The inputs are gray scaled pictures obtained using camera and already processed 
 \label{tab:trans}
 \end{table}
 
-It is worth noting that only 7,000 images are available from the training set, which is far from enough for training ConvNet, hence we consider augmenting them by reasonable transformations. Since the type of plankton remain invariance to most affine transformations, we applied multiple random transformation with parameters specified in table \ref{tab:trans}.
+It is worth noting that only 7,000 images are available from the training set, which is far from enough for training ConvNet, hence we consider augmenting them by reasonable transformations. Since the type of plankton remain invariance to most affine transformations, we applied multiple random transformation with parameters specified in table \ref{tab:trans}. The image augmentation result is visualized in figure \ref{augmentation}.
 
-For vector based models like Random Forest and Gradient Boost, we first augment the training set by 20 times, then flatten them as a collection of vectors. After this procedure, the model will be trained with the augmented and flattened dataset, which contains more than 140,000 images. For ConvNet, sample augmentation process is abstracted as the first layer of network, i.e. whenever an image comes in it will be first augmented randomly, and then be processed by the ConvNet. Thus the size of training images for ConvNet is determined by the number of iterations it runs.
+For vector based models like Random Forest and Gradient Boost, we first augment the training set by 20 times, then flatten them as a collection of vectors. After this procedure, the model will be trained with the augmented and flattened dataset, which contains more than 140,000 images. For ConvNet, sample augmentation process has been done in real-time. In other words, it is abstracted as the first layer of network. Whenever an image comes in it will be first augmented randomly, and then be processed by the ConvNet. The advantages of real time data augmentation are as follows: first, it greatly saves the space for data storage, because we only keep the original images and modified versions are threw away once we finish one mini-batch; second, the data augmentation is accomplished through the optimization, so for each iteration we always use different data (randomly modified version of original data), which means the degree of data augmentation is simply decided by how many iterations we run.
 
 \section{Selected Models for Image Classification}
 \subsection{Convolutional Neural Networks (ConvNet)}
@@ -222,12 +222,42 @@ The prediction preformance of Convolutional Neural Network(accuracy = 95\%) is m
 
 \printbibliography
 
+\clearpage
 \section*{Appendix}
 \subsection*{Implementation Details}
 For Ensemble Methods, we firstly vectorzie the image and save it as .npy file. For the Convolutional Neural Network, we store the file as 4D array (d1, d2, d3, d4), where d1 stands for the number of observations, d2 stands for the number of channels, $d1 \times d2$ stands for the dimension for pixels.
 We use several python modules for this project, including sklearn, Theano, xgboost and keras. The sklearn module is used for Random Forest and Restricted Bolzmann Machine pretraining. Theano is implemented for training the Deep Belief Network. The xgboost module is taken to realize the boosting algorithm. Finally, we use keras to solve the Convolution Neural Network problem with real-time data augmentation.
 
-\subsection*{Grid Search Cross-Validation Design}
+\subsection*{Extra Tables and Figures}
+\begin{table}[ht!]
+\centering
+\small
+\caption{Sample from Dataset}
+\begin{tabular}{m{3pt} m{130pt} m{120pt}}
+\toprule
+\multicolumn{2}{c}{Label} & \multicolumn{1}{c}{Image Sample}\\
+\midrule
+1 & acantharia\_protist & \includegraphics[scale=0.4]{./fig/acantharia_protist.png}\\
+2 & appendicularian\_s\_shape & \includegraphics[scale=0.4]{./fig/appendicularian_s_shape.png}\\
+4 & chaetognath\_non\_sagitta & \includegraphics[scale=0.4]{./fig/chaetognath_non_sagitta.png}\\
+4 & copepod\_calanoid & \includegraphics[scale=0.4]{./fig/copepod_calanoid.png}\\
+5 & copepod\_cyclopoid\_oithona & \includegraphics[scale=0.4]{./fig/copepod_cyclopoid_oithona.png}\\
+6 & trichodesmium\_bowtie & \includegraphics[scale=0.4]{./fig/trichodesmium_bowtie.png}\\
+7 & trichodesmium\_puff & \includegraphics[scale=0.4]{./fig/trichodesmium_puff.png}\\
+8 & trichodesmium\_tuft & \includegraphics[scale=0.4]{./fig/trichodesmium_tuft.png}\\
+\bottomrule
+\label{sample from dataset}
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht!]
+\centering
+\small
+\includegraphics[width=.6\linewidth]{fig/CSci-5525-data-augmentation-crop.pdf}
+\caption{Original (Left) v.s. Augmented (Right)}
+\label{augmentation}
+\end{figure}
+
 \begin{table}[ht]
 \centering
 \small
@@ -257,9 +287,11 @@ maximum depth:    & 6   & 9   & 12  \\
 \end{table}
 
 
+
+
 \begin{table}[ht]
 \centering
-\caption{Structure of ConvNet(whole data)}
+\caption{Structure of ConvNet (whole data)}
 \begin{tabular}{lll}
 \hline
 Layer           & Size             & Output             \\ \hline
