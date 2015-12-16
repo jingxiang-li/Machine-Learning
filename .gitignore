@@ -26,6 +26,9 @@
 *.bcf
 *.run.xml
 *.fls
+*.nav
+*.snm
+*.vrb
 
 # python
 __pycache__/
