@@ -55,7 +55,6 @@
 \pagestyle{fancy}
 \usepackage{extramarks}
 \usepackage{lineno}
-\linenumbers
 
 \lhead{Zeng, Chen and Li (G19)}
 \chead{}
@@ -97,7 +96,7 @@ Due to the intensive demand for big data analysis, machine learning has became o
 
 Although machine learning techniques can be applied in computer vision, the aforementioned approaches still have obvious limitations in processing images. First, many classical models, like SVM and Adaboost, are designed for vector based data. That means the input for SVM and Adaboost cannot be collections of 2D or 3D matrices, which are known as common representations for images. To address this issue, a naive way researchers did before is to simply flatten the input matrices to 1D vectors, or to use the color histogram as features. Note that both approaches destroy the original spatial structure of images, hence model trained from this kind features is hardly to achieve satisfactory accuracy. Secondly, common machine learning techniques cannot preserve invariance to spatial changes of pictures. Say a picture of flower, under reasonable similarity transformations, like rotation and scaling, it is still a picture of flower. But models like SVM and Adaboost cannot guarantee the same output for transformed pictures, which is very likely to reduce the prediction consistency. Therefore, it is necessary to find ways to capture the spatial pattern of images for making reliable classification. Until recently, researchers have found that Convolutional Neural Network is the most successful model for modeling the spatial pattern of images and doing classification.
 
-Convolutional neural network (ConvNet) is a type of feed-forward artificial neural network inspired biologically from cat's visual cortex\cite{hubel1968receptive}. In ConvNet, convolution kernels are applied to the 2D matrices to generate inputs for the next connected layers. By learning parameters for convolution kernels, they are capable to capture the local spatial features of the images, and hence ConvNet is very likely to yield better prediction result for image classification problem. In fact, ConvNet is not a new idea in computer vision, it was first proposed by LeCun\cite{lecun1989generalization} in 1989. The reason it does becomes popular until recent years is that, the complexity of ConvNet is too large. The number of parameters in a common ConvNet could be more than millions, suggesting that huge amount of input images and super-efficient computation techniques are both required for training it. Fortunately, these two challenges are resolved due to the advances of Internet and the highly optimized GPU computation for 2D convolution operations.
+Convolutional neural network (ConvNet) is a type of feed-forward artificial neural network inspired biologically from cat's visual cortex\cite{hubel1968receptive}. In ConvNet, convolution kernels are applied to the 2D matrices to generate inputs for the next connected layers. By learning parameters for convolution kernels, they are capable to capture the local spatial features of the images, and hence ConvNet is very likely to yield better prediction result for image classification problem. In fact, ConvNet is not a new idea in computer vision, it was first proposed by LeCun\cite{lecun1989generalization} in 1989. The reason it does not become popular until recent years is that, the complexity of ConvNet is too large. The number of parameters in a common ConvNet could be more than millions, suggesting that huge amount of input images and super-efficient computation techniques are both required for training it. Fortunately, these two challenges are resolved due to the advances of Internet and the highly optimized GPU computation for 2D convolution operations.
 
 In this article we would like to evaluate the performance of ConvNet in image classification, and compare it with Gradient Boosting and Random Forest, which are known as commonly used vector based machine learning approaches. The dataset we use is known as the part of National Data Science Bowl provided by the Hatfield Marine Science Center at Oregon State University. It contains images for ocean plankton as input and type of them as output. Our goal is to find the best model to automatically identify ocean plankton given their images. Details for the dataset will be explained in the next section.
 
@@ -224,70 +223,10 @@ The prediction preformance of Convolutional Neural Network(accuracy = 95\%) is m
 
 \clearpage
 \section*{Appendix}
-\subsection*{Implementation Details}
-For Ensemble Methods, we firstly vectorzie the image and save it as .npy file. For the Convolutional Neural Network, we store the file as 4D array (d1, d2, d3, d4), where d1 stands for the number of observations, d2 stands for the number of channels, $d1 \times d2$ stands for the dimension for pixels.
-We use several python modules for this project, including sklearn, Theano, xgboost and keras. The sklearn module is used for Random Forest and Restricted Bolzmann Machine pretraining. Theano is implemented for training the Deep Belief Network. The xgboost module is taken to realize the boosting algorithm. Finally, we use keras to solve the Convolution Neural Network problem with real-time data augmentation.
+\subsection*{Complete Study}
+In complete study we decide to address the same problem with the entire dataset, where more than 30,000 images with 121 different labels are included. The architecture of ConvNet is redesigned to accommodate the complexity of this study in the following way: First, the input size has been changed to $100 \times 100$, so that more information can be included in each input image. Second, extra layers have been inserted to the network. In the new ConvNet, we have 10 convolution layers, 4 max pooling layers and 3 fully connected layers. Therefore much more parameters are involved in this network to increase the complexity of the model. The specific structure of ConvNet has been summarized in table \ref{complete}.
 
-\subsection*{Extra Tables and Figures}
-\begin{table}[ht!]
-\centering
-\small
-\caption{Sample from Dataset}
-\begin{tabular}{m{3pt} m{130pt} m{120pt}}
-\toprule
-\multicolumn{2}{c}{Label} & \multicolumn{1}{c}{Image Sample}\\
-\midrule
-1 & acantharia\_protist & \includegraphics[scale=0.4]{./fig/acantharia_protist.png}\\
-2 & appendicularian\_s\_shape & \includegraphics[scale=0.4]{./fig/appendicularian_s_shape.png}\\
-4 & chaetognath\_non\_sagitta & \includegraphics[scale=0.4]{./fig/chaetognath_non_sagitta.png}\\
-4 & copepod\_calanoid & \includegraphics[scale=0.4]{./fig/copepod_calanoid.png}\\
-5 & copepod\_cyclopoid\_oithona & \includegraphics[scale=0.4]{./fig/copepod_cyclopoid_oithona.png}\\
-6 & trichodesmium\_bowtie & \includegraphics[scale=0.4]{./fig/trichodesmium_bowtie.png}\\
-7 & trichodesmium\_puff & \includegraphics[scale=0.4]{./fig/trichodesmium_puff.png}\\
-8 & trichodesmium\_tuft & \includegraphics[scale=0.4]{./fig/trichodesmium_tuft.png}\\
-\bottomrule
-\label{sample from dataset}
-\end{tabular}
-\end{table}
-
-\begin{figure}[ht!]
-\centering
-\small
-\includegraphics[width=.6\linewidth]{fig/CSci-5525-data-augmentation-crop.pdf}
-\caption{Original (Left) v.s. Augmented (Right)}
-\label{augmentation}
-\end{figure}
-
-\begin{table}[ht]
-\centering
-\small
-\caption{Grid Search CV for Gradient Boost}
-\label{cv:gb}
-\begin{tabular}{llll}
-\toprule
-number of rounds: & 100 & 500 & 1000 \\
-feature proportion:     & 0.3 & 0.8 & 1   \\
-maximum depth:    & 6   & 9   & 12  \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\small
-\caption{Grid Search CV for Random Forest}
-\label{cv:rf}
-\begin{tabular}{llll}
-\toprule
-number of trees: & 100 & 500 & 1000 \\
-maximum feature:     &200  & 500 & 1000   \\
-maximum depth:    & 6   & 9   & 12  \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-
+After careful training and predicting, the total prediction accuracy of ConvNet for the complete study is about \textbf{0.674}. This accuracy is still acceptable due to the large number of classes involved in this problem.
 
 \begin{table}[ht]
 \centering
@@ -319,8 +258,75 @@ dropout         & p=0.5            & (32, 512)          \\
 fully connected & 256 hidden units & (32, 256)          \\
 dropout         & p=0.5            & (32, 256)          \\
 fully connected & 121 way soft-max & (32, 121)          \\ \hline
+\label{complete}
 \end{tabular}
 \end{table}
+
+
+\subsection*{Implementation Details}
+For Ensemble Methods, we firstly vectorzie the image and save it as .npy file. For the Convolutional Neural Network, we store the file as 4D array (d1, d2, d3, d4), where d1 stands for the number of observations, d2 stands for the number of channels, $d1 \times d2$ stands for the dimension for pixels.
+We use several python modules for this project, including sklearn, Theano, xgboost and keras. The sklearn module is used for Random Forest and Restricted Boltzmann Machine pretraining. Theano is implemented for training the Deep Belief Network. The xgboost module is taken to realize the boosting algorithm. Finally, we use keras to solve the Convolution Neural Network problem with real-time data augmentation.
+
+
+\begin{table}[p]
+\centering
+\small
+\caption{Grid Search Design for Gradient Boost}
+\label{cv:gb}
+\begin{tabular}{llll}
+\toprule
+number of rounds: & 100 & 500 & 1000 \\
+feature proportion:     & 0.3 & 0.8 & 1   \\
+maximum depth:    & 6   & 9   & 12  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[p]
+\centering
+\small
+\caption{Grid Search Design for Random Forest}
+\label{cv:rf}
+\begin{tabular}{llll}
+\toprule
+number of trees: & 100 & 500 & 1000 \\
+maximum feature:     &200  & 500 & 1000   \\
+maximum depth:    & 6   & 9   & 12  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[p]
+\centering
+\small
+\caption{Sample from Dataset}
+\begin{tabular}{m{3pt} m{130pt} m{120pt}}
+\toprule
+\multicolumn{2}{c}{Label} & \multicolumn{1}{c}{Image Sample}\\
+\midrule
+0 & acantharia\_protist & \includegraphics[scale=0.4]{./fig/acantharia_protist.png}\\
+1 & appendicularian\_s\_shape & \includegraphics[scale=0.4]{./fig/appendicularian_s_shape.png}\\
+2 & chaetognath\_non\_sagitta & \includegraphics[scale=0.4]{./fig/chaetognath_non_sagitta.png}\\
+3 & copepod\_calanoid & \includegraphics[scale=0.4]{./fig/copepod_calanoid.png}\\
+4 & copepod\_cyclopoid\_oithona & \includegraphics[scale=0.4]{./fig/copepod_cyclopoid_oithona.png}\\
+5 & trichodesmium\_bowtie & \includegraphics[scale=0.4]{./fig/trichodesmium_bowtie.png}\\
+6 & trichodesmium\_puff & \includegraphics[scale=0.4]{./fig/trichodesmium_puff.png}\\
+7 & trichodesmium\_tuft & \includegraphics[scale=0.4]{./fig/trichodesmium_tuft.png}\\
+\bottomrule
+\label{sample from dataset}
+\end{tabular}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\small
+\includegraphics[width=.6\linewidth]{fig/CSci-5525-data-augmentation-crop.pdf}
+\caption{Original (Left) v.s. Augmented (Right)}
+\label{augmentation}
+\end{figure}
+
+
+
 
 
 \end{document}
