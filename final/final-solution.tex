@@ -1,0 +1,347 @@
+%!TEX program = pdflatex
+%# -*- coding: utf-8 -*-
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt,oneside,a4paper]{article}
+
+%% ------------------------------------------------------
+%% load packages
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false,
+ unicode=true]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{url}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{microtype}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{bm}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[algoruled, vlined]{algorithm2e}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mono=false]{libertine}
+\usepackage[libertine]{newtxmath}
+\linespread{1.1}
+\setlength{\parskip}{.5\baselineskip}
+% \usepackage[toc,eqno,enum,bib,lineno]{tabfigures}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[figure]{hypcap}
+\usepackage[hypcap]{caption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{grffile}
+%\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+\usepackage{needspace}
+
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{tabu}
+
+\usepackage{verbatim}
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=true,
+    numbers=left,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    mathescape=true
+}
+\lstset{style=mystyle}
+
+% \usepackage[square,numbers,super,comma,sort]{natbib}
+\usepackage[backend=biber, style=nature, sorting=none, isbn=false, url=false, doi=false]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[]{authblk}
+
+%% Class, Exam, Date, etc.
+\newcommand{\class}{CSCI 5525: Machine Learning}
+\newcommand{\term}{Fall 2015}
+\newcommand{\examnum}{Final Exam}
+\newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
+\newcommand{\hmwkAuthorName}{Jingxiang Li}
+
+\title{\hmwkTitle}
+\author{\hmwkAuthorName}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\lhead{\hmwkAuthorName}
+\chead{}
+\rhead{\hmwkTitle}
+\cfoot{\thepage}
+
+\newcounter{problemCounter}
+\newcounter{subproblemCounter}
+\renewcommand{\thesubproblemCounter}{\alph{subproblemCounter}}
+\newcommand{\problem}[0] {
+    \clearpage
+    \stepcounter{problemCounter}
+    \setcounter{subproblemCounter}{0}
+}
+
+\newcommand{\subproblem}[0] {
+    \stepcounter{subproblemCounter}
+    \noindent{\textbf{\large{Problem \theproblemCounter.\hspace{1pt}\thesubproblemCounter}}}
+    \vspace{\baselineskip}
+    \newline
+}
+
+\newcommand{\solution} {
+    \vspace{15pt}
+    \noindent\ignorespaces\textbf{\large Solution}\par
+}
+\setlength\parindent{0pt}
+
+%% some math shortcuts
+\newcommand{\m}[1]{\texttt{{#1}}}
+\newcommand{\E}[0]{\mathrm{E}}
+\newcommand{\Var}[0]{\mathrm{Var}}
+\newcommand{\sd}[0]{\mathrm{sd}}
+\newcommand{\Cov}[0]{\mathrm{Cov}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\problem
+\subproblem
+Knowing that
+$$p(C_{i}|x) = \frac{p(x|C_{i})p(C_{i})}{p(x)}, ~~i = 1, 2$$
+we have
+$$\frac{p(C_{1}|x)}{p(C_{2}|x)} = \frac{p(x|C_{1})}{p(x|C2)} \cdot \frac{P(C_{1})}{P(C_{2})}$$
+i.e.
+$$\log\left(\frac{p(C_{1}|x)}{p(C_{2}|x)}\right) = \log P(x|C_{1}) + \log P(C_{1}) - \log P(x|C_{2}) - \log P(C_{2})$$
+Given
+$$P(x|C_{i}) = \exp(\eta_{i}^{T}x)g(\eta_{i})h(x), ~~i = 1, 2$$
+The above formula becomes
+\begin{equation*}
+\begin{aligned}
+\log\left(\frac{p(C_{1}|x)}{p(C_{2}|x)}\right) &= \eta_{1}^{T}x + \log g(\eta_{1}) + \log h(x) + \log P(C_{1}) - (\eta_{2}^{T}x + \log g(\eta_{2}) + \log h(x) + \log P(C_{2}))\\
+&= (\eta_{1} - \eta_{2})^{T}x + \log g(\eta_{1}) - \log g(\eta_{2}) + \log P(C_{1}) - \log P(C_{2})
+\end{aligned}
+\end{equation*}
+Let $\bm{w} = \eta_{1} - \eta_{2}$, $w_{0} = \log g(\eta_{1}) - \log g(\eta_{2}) + \log P(C_{1}) - \log P(C_{2})$
+
+We have
+$$\log\left(\frac{p(C_{1}|x)}{p(C_{2}|x)}\right) = \bm{w}^{T}x + w_{0}$$
+
+\subproblem
+Note that $E(w)$ can be separated into two parts. Let $E(w) = \ell(w) + \lambda||w||_{1}$, then it's sufficient to show that both $\ell(w)$ and $||w||_{1}$ are convex functions of $w$.
+
+First, I will prove the convexity of $\ell(w)$ by checking its second derivative.
+$$\nabla\ell(w) = \sum_{i = 1}^{n}{-y_{i}x_{i} + \frac{\exp(w^{T}x_{i})}{1 + \exp(w^{T}x_{i})}}x_{i}$$
+Let $\pi_{i} = \frac{\exp(w^{T}x_{i})}{1 + \exp(w^{T}x_{i})}$, we have
+$$\nabla\ell(w) = \sum_{i = 1}^{n}{x_{i}(\pi_{i} - y_{i})}$$
+Then
+$$\nabla^2\ell(w) = \sum_{i = 1}^{n}{x_{i}\frac{\exp(w^{T}x_{i})}{\left[1 + \exp(w^{T}x_{i})\right]^2}x_{i}^{T}} = \sum_{i = 1}^{n}x_{i}\pi_{i}(1 - \pi_{i})x_{i}^{T}$$
+Note that $0 < \pi_{i} < 1$. Therefore we can define $p_{i} = \sqrt{\pi_{i}(1 - \pi_{i})}$, and
+$$\nabla^2\ell(w) = \sum_{i = 1}^{n}{p_{i}x_{i}(p_{i}x_{i})^{T}}$$
+Then $\forall \alpha \in \mathbb{R}^{d}$, $\alpha \neq 0$ we have
+$$\alpha^{T}\nabla^2\ell(w)\alpha = \sum_{i = 1}^{n}{\alpha^{T}p_{i}x_{i}(p_{i}x_{i})^{T}\alpha} = \sum_{i = 1}^{n}{(\alpha^{T}p_{i}x_{i})^2} \geq 0$$
+which suggests that $\nabla^2\ell(w)$ is positive semidefinite, i.e. $\ell(w)$ is convex.
+
+Next I will prove the convexity of $||w||_{1}$, where $w \in \mathbb{R}^{d}$
+
+First I will show $f(x) = |x|$ is convex. This can be done by the definition of convexity. Let $\forall x_{1}, x_{2} \in \mathbb{R}^{1}$, $\forall \lambda \in [0, 1]$, here we consider two cases:
+\begin{enumerate}
+\item If $x_{1}$ and $x_{2}$ have the same sign, then obviously $f(\lambda x_{1} + (1 - \lambda)x_{2}) = \lambda f(x_{1}) + (1 - \lambda)f(x_{2})$.
+\item If $x_{1}$ and $x_{2}$ have different sign, without loss generality, let's assume $x_{1} \leq 0$ and $x_{2} > 0$. If $|\lambda x_{1} + (1 - \lambda)x_{2}| > 0$, then $|\lambda x_{1} + (1 - \lambda)x_{2}| - \lambda|x_{1}| - (1 - \lambda)|x_{2}| = 2 \lambda x_{1} \leq 0$; otherwise $|\lambda x_{1} + (1 - \lambda)x_{2}| < 0$, then $|\lambda x_{1} + (1 - \lambda)x_{2}| - \lambda|x_{1}| - (1 - \lambda)|x_{2}| = -2 (1 - \lambda) x_{2} < 0$.
+\end{enumerate}
+Combining the two cases, we have $\forall x_{1}, x_{2} \in \mathbb{R}^{1}$, $\forall \lambda \in [0, 1]$, $f(\lambda x_{1} + (1 - \lambda)x_{2}) \leq \lambda f(x_{1}) + (1 - \lambda)f(x_{2})$, suggesting that $f(x) = |x|$ is convex.
+
+Then for $||w||_{1} = \sum_{i = 1}^{d}{|w_{i}|}$, this is simply the sum of convex functions. Hence $||w||_{1}$ is still convex.
+
+Since both $\ell(w)$ and $||w||_{1}$ are convex functions of $w$, $E(w) = \ell(w) + \lambda||w||_{1}$, $\lambda > 0$ is convex.
+
+\problem
+\subproblem
+$$\Lambda(x, u, v) = x^{T}Px + q^{T}x + u^{T}(Ax - a) + v^{T}(Bx - b)$$
+where $u \in \mathbb{R}^{k_{1}}$, $v \in \mathbb{R}^{k_{2}}$, $v \geq 0$\newline
+
+\subproblem
+Since $P$ is positive definite, $\Lambda(x, u, v)$ has global minimum. We can find it by calculating the first derivative of $\Lambda$ and set it to 0.
+$$\frac{\partial\Lambda(x, u, v)}{\partial x} = Px + q + A^{T}u + B^{T}v := 0$$
+i.e.
+$$x^{*} = -P^{-1}(q + A^{T}u + B^{T}v)$$\newline
+
+\subproblem
+To utilize the ADMM, we first introduce an extra parameter $z$, and let $Bx = z$. The original objective function can be written as
+$$\min_{x, z}x^{T}Px + q^{T}x ~~~\mathrm{s.t.}~~~ Ax = a,~ Bx = z,~ z \leq b$$
+Let $g(z)$ be the indicator function of $z \leq b$. Then the augmented Lagrangian becomes
+$$L_{\rho} = x^{T}Px + q^{T}x + g(z) + u^{T}(Ax - a) + v^{T}(Bx - z) + \frac{\rho_{u}}{2}\left|\left|Ax - a\right|\right|^2 + \frac{\rho_{v}}{2}\left|\left|Bx - z\right|\right|^2$$
+where $u \in \mathbb{R}^{k_{1}}$, $v \in \mathbb{R}^{k_{2}}$
+
+Here we need to derive the update function for $x$ and $z$.
+$$\frac{\partial L_{\rho}}{\partial x} = Px + q + A^{T}u + B^{T}v + \rho_{u}A^{T}(Ax - a) + \rho_{v}B^{T}(Bx - z) := 0 $$
+$$(P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)x = \rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v $$
+$$x^{*} = (P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v)$$
+Suppose $z \leq b$, then
+$$\frac{\partial L_{\rho}}{\partial z} = -v + \rho_{v}(z - Bx) := 0$$
+$$z^{*} = Bx + \frac{v}{\rho_{v}}$$
+we set $z^{*} = b$ if $z > b$, i.e.
+$$z^{*} = \min\left\{Bx + \frac{v}{\rho_{v}}, b \right\}$$
+\clearpage
+Then the update functions for ADMM are as follows:
+\begin{equation*}
+\begin{aligned}
+x_{k + 1} &= (P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z_{k} - q - A^{T}u_{k} - B^{T}v_{k})\\
+z_{k + 1} &= \min\left\{Bx_{k+1} + \frac{v_{k}}{\rho_{v}}, b \right\}\\
+u_{k + 1} &= u_{k} + \rho_{u}(Ax_{k + 1} - a)\\
+v_{k + 1} &= v_{k} + \rho_{v}(Bx_{k + 1} - z_{k + 1})
+\end{aligned}
+\end{equation*}
+
+\problem
+\subproblem
+\begin{equation*}
+\begin{aligned}
+p(z_{k}|x_{n}) &= \frac{p(x_{n}|z_{k})p(z_{k})}{p(x_{n})} \\
+&= \frac{p(x_{n}|z_{k})p(z_{k})}{\sum_{j = 1}^{K}{p(x_{n}|z_{j})p(z_{j})}}\\
+&= \frac{(2\pi)^{-\frac{d}{2}}|\Sigma|^{-\frac{1}{2}}\exp(-\frac{1}{2}(x_{n} - \mu_{k})^{T}\Sigma^{-1}(x_{n} - \mu_{k}))\pi_{k}}{\sum_{j = 1}^{K}{(2\pi)^{-\frac{d}{2}}|\Sigma|^{-\frac{1}{2}}\exp(-\frac{1}{2}(x_{n} - \mu_{j})^{T}\Sigma^{-1}(x_{n} - \mu_{j}))\pi_{j}}}\\
+&=\frac{\exp(-\frac{1}{2}(x_{n} - \mu_{k})^{T}\Sigma^{-1}(x_{n} - \mu_{k}))\pi_{k}} {\sum_{j = 1}^{K}{\exp(-\frac{1}{2}(x_{n} - \mu_{j})^{T}\Sigma^{-1}(x_{n} - \mu_{j}))\pi_{j}}}
+\end{aligned}
+\end{equation*}
+
+\subproblem
+Let $p_{i,k} = p(z_{k}|x_{i})$, then we know the likelihood for $X$ is
+$$L = \prod_{i = 1}^{N}\sum_{k = 1}^{K}p(x_{i}|z_{k})\pi_{k}$$
+and the log-likelihood
+$$l = \sum_{i = 1}^{N}{\log \sum_{k = 1}^{K}p(x_{i}|z_{k})\pi_{k}}$$
+
+Next I will take derivative w.r.t. $\mu_{k}$ and set it to 0
+\begin{equation*}
+\begin{aligned}
+0 &= \frac{\partial l}{\partial \mu_{k}}\\
+0 &=\sum_{i = 1}^{N}\frac{\pi_{k}\frac{\partial p(x_{i}|z_{k})}{\partial \mu_{k}}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}} \\
+0 &=\sum_{i = 1}^{N}\frac{p(x_{i}|z_{k})\pi_{k}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}}\frac{\partial\left\{ -\frac{1}{2}(x_{i} - \mu_k)^{T}\Sigma^{-1}(x_{i} - \mu_k)\right\}}{\partial \mu_{k}}\\
+0 &= \sum_{i = 1}^{N}p_{i, k}\Sigma^{-1}(x_{i} - \mu_{k})\\
+0 &= \Sigma^{-1}\sum_{i = 1}^{N}p_{i,k}(x_{i} - \mu_{k})
+\end{aligned}
+\end{equation*}
+Note that $\Sigma^{-1}$ is invertible, suggesting that $\mathrm{dim}(\mathrm{NULL}(\Sigma^{-1})) = 0$, and
+$$\sum_{i = 1}^{N}p_{i,k}(x_{i} - \mu_{k}) = 0$$
+Let $N_{k} = \sum_{i = 1}^{N}p_{i,k}$, we have
+$$\hat{\mu}_{k} = \frac{1}{N_{k}}\sum_{i = 1}^{N}p_{i,k}x_{i} = \frac{1}{N_{k}}\sum_{i = 1}^{N}p(z_{k}|x_{i})x_{i}$$
+
+Next I will derive the update function for $\Sigma$. Let $\Omega = \Sigma^{-1}$ be the precision matrix of Gaussian distributions. I will take derivative w.r.t. $\Omega$, set it to 0 and then derive the close form of $\Sigma$.
+\begin{equation*}
+\begin{aligned}
+0 &= \frac{\partial l}{\partial \Omega}\\
+0 &= \sum_{i = 1}^{N}\frac{\sum_{j = 1}^{K}\pi_{j}\frac{\partial p(x_{i}|z_{j})}{\partial \Omega}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}} \\
+0 &= \sum_{i = 1}^{N} \frac{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j} \frac{1}{p(x_{i}|z_{j})} \frac{\partial p(x_{i}|z_{j})}{\partial \Omega}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}} \\
+0 &= \sum_{i = 1}^{N} \frac{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}  \frac{\partial \log p(x_{i}|z_{j})}{\partial \Omega}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}}\\
+0 &= \sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j} \frac{\partial \log p(x_{i}|z_{j})}{\partial \Omega} \\
+0 &= \sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j} \frac{\partial \left\{\frac{1}{2}\log|\Omega| - \frac{1}{2}(x_{i} - \mu_{j})^{T}\Omega (x_{i} - \mu_{j})\right\}}{\partial \Omega}\\
+0 &= \sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j} \Omega^{-1} - (x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T}\\
+\sum_{i = 1}^{N} \sum_{j = 1}^{K} p_{i, j} \Omega^{-1} &= \sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j}(x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T}\\
+\Omega^{-1} &= \frac{1}{N}\sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j}(x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T}
+\end{aligned}
+\end{equation*}
+Note that $\Omega = \Sigma^{-1}$, then we have
+$$\hat{\Sigma} = \frac{1}{N}\sum_{i = 1}^{N} \sum_{j = 1}^{K}p_{i, j}(x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T} = \frac{1}{N}\sum_{i = 1}^{N} \sum_{j = 1}^{K}p(z_{j}|x_{i})(x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T}$$
+
+Next I will derive the update function for $\pi_{k}$. Since $\sum_{j = 1}^{K}\pi_{j} = 1$, the optimization problem becomes
+$$\max_{\pi_{k}} \sum_{i = 1}^{N}{\log \sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}}~~~\mathrm{s.t.}~~~\sum_{j = 1}^{K}\pi_{j} = 1$$
+The Lagrangian of this problem is
+$$\Lambda(\pi_{k}, \lambda) = \sum_{i = 1}^{N}{\log \sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}} + \lambda\left(1 - \sum_{j = 1}^{K}\pi_{j}\right)$$
+
+Then I will take the derivative w.r.t. $\pi_{k}$ and set it to 0. Let $\sum_{i = 1}^{N}{p_{i, k}} = N_{k}$
+\begin{equation*}
+\begin{aligned}
+0 &= \frac{\partial \Lambda(\pi_{k}, \lambda) }{\partial \pi_{k}}\\
+0 &= \sum_{i = 1}^{N}\frac{p(x_{i}|z_{k})}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}} - \lambda\\
+\lambda &= \frac{1}{\pi_{k}}\sum_{i = 1}^{N}\frac{p(x_{i}|z_{k})\pi_{k}}{\sum_{j = 1}^{K}p(x_{i}|z_{j})\pi_{j}}\\
+\pi_{k} &= \frac{1}{\lambda}\sum_{i = 1}^{N}{p_{i, k}} \\
+\pi_{k} &= \frac{1}{\lambda}N_{k}\\
+\end{aligned}
+\end{equation*}
+Note that $\sum_{j = 1}^{K}\pi_{j} = 1$, there must be $\lambda = N = \sum_{j = 1}^{K}N_{j}$. By the strong duality of Lagrangian, we have
+$$\hat{\pi}_{k} = \frac{N_{k}}{N}$$
+
+In summary, the update functions for $\mu_{k}$, $\pi_{k}$ and $\Sigma$ are given by
+\begin{equation*}
+\begin{aligned}
+\hat{\mu}_{k} &= \frac{1}{N_{k}}\sum_{i = 1}^{N}p(z_{k}|x_{i})x_{i}\\
+\hat{\Sigma} &= \frac{1}{N}\sum_{i = 1}^{N} \sum_{j = 1}^{K}p(z_{j}|x_{i})(x_{i} - \mu_{j})(x_{i} - \mu_{j})^{T}\\
+\hat{\pi}_{k} &= \frac{N_{k}}{N}
+\end{aligned}
+\end{equation*}
+\newline
+
+\subproblem
+No. If the covariance matrix for all Gaussian distributions are different, the update function for $\Sigma_{k}$ would be
+$$\hat{\Sigma}_{k} = \frac{1}{N_{k}}\sum_{i = 1}^{N}p(z_{k}|x_{i})(x_{i} - \mu_{k})(x_{i} - \mu_{k})^{T}$$
+and
+$$\hat{\Sigma} = \frac{1}{N}\sum_{j = 1}^{K}N_{j}\hat{\Sigma}_{j}$$
+suggesting that the computation for deriving $\hat{\Sigma}$ and all $\hat{\Sigma}_{k}$ are exactly the same. the computation of $\Sigma$ is not simplified.
+
+\problem
+\subproblem
+Given that $f(x) \sim \mathrm{GP}(m(x), k(x, x'))$, $y | f(x) \sim N(f(x), \sigma^2)$, by the conditional probability formula for joint Gaussian distribution, we have
+$$f(x^{*}) | x^{*}, X, y \sim N(\mu_{f(x^{*})}, \Sigma_{f(x^{*})})$$
+where
+$$\mu_{f(x^{*})} = m(x^{*}) + k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}(y - m(X))$$
+and
+$$\Sigma_{f(x^{*})} = k(x^{*}, x^{*}) - k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}k(X, x^{*})$$
+Then we have
+$$y^{*} | x^{*}, X, y \sim N(\mu_{y^{*}}, \Sigma_{y^{*}})$$
+where
+$$\mu_{y^{*}} = m(x^{*}) + k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}(y - m(X))$$
+and
+$$\Sigma_{y^{*}} = \sigma^{2} + k(x^{*}, x^{*}) - k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}k(X, x^{*})$$
+Then it's easy to see that
+$$\mu_{y^{*}} = m(x^{*}) + k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}(y - m(X)) = \beta_{0} + \sum_{i = 1}^{n}\beta_{i}y_{i} = \alpha_{0} + \sum_{i = 1}^{n}\alpha_{i}k(x^{*}, X_{i})$$
+where
+$$\beta_{0} = m(x^{*}) - k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}m(X)~~~~~~~~\beta_{i} = \left[k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}\right]_{i}$$
+$$\alpha_{0} = m(x^{*})~~~~~~~~\alpha_{i} = \left[[k(X, X) + \sigma^{2}]^{-1}(y - m(X))\right]_{i}$$
+\newline
+
+\subproblem
+It depends on the choice of the mean function $m$, the kernel function $k$ and the training set $X$. Suppose $n = 1$, $m(x) = y_{1}$, then
+\begin{equation*}
+\begin{aligned}
+\mu_{y^{*}} &= m(x^{*}) + k(x^{*}, X)[k(X, X) + \sigma^{2}]^{-1}(y - m(X)) \\
+&= y_{1} + k(x^{*}, x_{1})[k(x_{1}, x_{1}) + \sigma^{2}]^{-1}(y_{1} - y_{1}) \\
+&= y_{1}
+\end{aligned}
+\end{equation*}
+In this case the mean of the predictive distribution exactly overlaps with $y_{i}$.
+
+However, in general case this would not happen for the following reasons:
+\begin{enumerate}
+    \item the mean of the predictive distribution will be dragged to the mean function $m(x)$
+    \item the mean will be influenced by other points $x'$, if $k(x^{*}, x') \neq 0$
+\end{enumerate}
+In summary, the predictive distribution at $x^{*}$ will exactly overlap with $y_{i}$ in some special cases, but in general cases this would not happen.
+\newline
+
+\subproblem
+Yes, we can obtain a closed form expression for the $m$-dimensional predictive joint distribution. By the definition of Gaussian process, $y^{*}$ and $y$ will have joint Gaussian distribution, the mean and the covariance matrix are clearly defined by the mean function $m(x)$ and kernel function $k(x, x')$. Then we can use the conditional probability formulas
+$$\mu_{1|2} = \mu_{1} + \Sigma_{12}\Sigma_{22}^{-1}(a - \mu_{2}) ~~~~~~~~ \Sigma_{1|2} = \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$$
+to derive the predictive distribution.
+\end{document}
+
