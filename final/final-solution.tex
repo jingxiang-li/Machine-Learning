@@ -82,7 +82,7 @@
 \newcommand{\term}{Fall 2015}
 \newcommand{\examnum}{Final Exam}
 \newcommand{\hmwkTitle}{\class \\[1ex] \examnum}
-\newcommand{\hmwkAuthorName}{Jingxiang Li}
+\newcommand{\hmwkAuthorName}{Jingxiang Li (lixx3899)}
 
 \title{\hmwkTitle}
 \author{\hmwkAuthorName}
@@ -205,9 +205,9 @@ $$L_{\rho} = x^{T}Px + q^{T}x + g(z) + u^{T}(Ax - a) + v^{T}(Bx - z) + \frac{\rh
 where $u \in \mathbb{R}^{k_{1}}$, $v \in \mathbb{R}^{k_{2}}$
 
 Here we need to derive the update function for $x$ and $z$.
-$$\frac{\partial L_{\rho}}{\partial x} = Px + q + A^{T}u + B^{T}v + \rho_{u}A^{T}(Ax - a) + \rho_{v}B^{T}(Bx - z) := 0 $$
-$$(P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)x = \rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v $$
-$$x^{*} = (P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v)$$
+$$\frac{\partial L_{\rho}}{\partial x} = 2Px + q + A^{T}u + B^{T}v + \rho_{u}A^{T}(Ax - a) + \rho_{v}B^{T}(Bx - z) := 0 $$
+$$(2P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)x = \rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v $$
+$$x^{*} = (2P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z - q - A^{T}u - B^{T}v)$$
 Suppose $z \leq b$, then
 $$\frac{\partial L_{\rho}}{\partial z} = -v + \rho_{v}(z - Bx) := 0$$
 $$z^{*} = Bx + \frac{v}{\rho_{v}}$$
@@ -217,7 +217,7 @@ $$z^{*} = \min\left\{Bx + \frac{v}{\rho_{v}}, b \right\}$$
 Then the update functions for ADMM are as follows:
 \begin{equation*}
 \begin{aligned}
-x_{k + 1} &= (P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z_{k} - q - A^{T}u_{k} - B^{T}v_{k})\\
+x_{k + 1} &= (2P + \rho_{u}A^{T}A + \rho_{v}B^{T}B)^{-1}(\rho_{u}A^{T}a + \rho_{v}B^{T}z_{k} - q - A^{T}u_{k} - B^{T}v_{k})\\
 z_{k + 1} &= \min\left\{Bx_{k+1} + \frac{v_{k}}{\rho_{v}}, b \right\}\\
 u_{k + 1} &= u_{k} + \rho_{u}(Ax_{k + 1} - a)\\
 v_{k + 1} &= v_{k} + \rho_{v}(Bx_{k + 1} - z_{k + 1})
