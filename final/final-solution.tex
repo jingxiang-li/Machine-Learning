@@ -231,7 +231,9 @@ v_{k + 1} &= v_{k} + \rho_{v}(Bx_{k + 1} - z_{k + 1})
 p(z_{k}|x_{n}) &= \frac{p(x_{n}|z_{k})p(z_{k})}{p(x_{n})} \\
 &= \frac{p(x_{n}|z_{k})p(z_{k})}{\sum_{j = 1}^{K}{p(x_{n}|z_{j})p(z_{j})}}\\
 &= \frac{(2\pi)^{-\frac{d}{2}}|\Sigma|^{-\frac{1}{2}}\exp(-\frac{1}{2}(x_{n} - \mu_{k})^{T}\Sigma^{-1}(x_{n} - \mu_{k}))\pi_{k}}{\sum_{j = 1}^{K}{(2\pi)^{-\frac{d}{2}}|\Sigma|^{-\frac{1}{2}}\exp(-\frac{1}{2}(x_{n} - \mu_{j})^{T}\Sigma^{-1}(x_{n} - \mu_{j}))\pi_{j}}}\\
-&=\frac{\exp(-\frac{1}{2}(x_{n} - \mu_{k})^{T}\Sigma^{-1}(x_{n} - \mu_{k}))\pi_{k}} {\sum_{j = 1}^{K}{\exp(-\frac{1}{2}(x_{n} - \mu_{j})^{T}\Sigma^{-1}(x_{n} - \mu_{j}))\pi_{j}}}
+&=\frac{\exp(-\frac{1}{2}(x_{n} - \mu_{k})^{T}\Sigma^{-1}(x_{n} - \mu_{k}))\pi_{k}} {\sum_{j = 1}^{K}{\exp(-\frac{1}{2}(x_{n} - \mu_{j})^{T}\Sigma^{-1}(x_{n} - \mu_{j}))\pi_{j}}}\\
+&= \frac{\exp(-\frac{1}{2}x_{n}^{T}\Sigma^{-1}x_{n} + \mu_{k}^{T}\Sigma^{-1}x_{n} -\frac{1}{2}\mu_{k}^{T}\Sigma^{-1}\mu_{k})\pi_{k}}{\sum_{j = 1}^{K}\exp(-\frac{1}{2}x_{n}^{T}\Sigma^{-1}x_{n} + \mu_{j}^{T}\Sigma^{-1}x_{n} -\frac{1}{2}\mu_{j}^{T}\Sigma^{-1}\mu_{j})\pi_{j}}\\
+&= \frac{\exp(\mu_{k}^{T}\Sigma^{-1}x_{n} -\frac{1}{2}\mu_{k}^{T}\Sigma^{-1}\mu_{k})\pi_{k}}{\sum_{j = 1}^{K}{\exp(\mu_{j}^{T}\Sigma^{-1}x_{n} -\frac{1}{2}\mu_{j}^{T}\Sigma^{-1}\mu_{j})\pi_{j}}}
 \end{aligned}
 \end{equation*}
 
