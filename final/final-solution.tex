@@ -183,10 +183,19 @@ $$\Lambda(x, u, v) = x^{T}Px + q^{T}x + u^{T}(Ax - a) + v^{T}(Bx - b)$$
 where $u \in \mathbb{R}^{k_{1}}$, $v \in \mathbb{R}^{k_{2}}$, $v \geq 0$\newline
 
 \subproblem
-Since $P$ is positive definite, $\Lambda(x, u, v)$ has global minimum. We can find it by calculating the first derivative of $\Lambda$ and set it to 0.
-$$\frac{\partial\Lambda(x, u, v)}{\partial x} = Px + q + A^{T}u + B^{T}v := 0$$
+Since $P$ is symmetric and positive definite, $\Lambda(x, u, v)$ has global minimum. We can find it by calculating the first derivative of $\Lambda$ and set it to 0.
+$$\frac{\partial\Lambda(x, u, v)}{\partial x} = 2Px + q + A^{T}u + B^{T}v := 0$$
 i.e.
-$$x^{*} = -P^{-1}(q + A^{T}u + B^{T}v)$$\newline
+$$x^{*} = -\frac{1}{2}P^{-1}(q + A^{T}u + B^{T}v)$$
+Then the Lagrangian dual is
+\begin{equation*}
+\begin{aligned}
+L(u, v) &= \min_{x}\Lambda(x, u, v)\\
+&= \frac{1}{4} (q + A^{T}u + B^{T}v)^{T}P^{-1}(q + A^{T}u + B^{T}v) -\frac{1}{2}(q^{T} + u^{T}A + v^{T}B)P^{-1}(q + A^{T}u + B^{T}v) - u^{T}a - v^{T}b\\
+&= -\frac{1}{4}(q + A^{T}u + B^{T}v)^{T} P^{-1}(q + A^{T}u + B^{T}v) - u^{T}a - v^{T}b
+\end{aligned}
+\end{equation*}
+\newline
 
 \subproblem
 To utilize the ADMM, we first introduce an extra parameter $z$, and let $Bx = z$. The original objective function can be written as
@@ -204,7 +213,7 @@ $$\frac{\partial L_{\rho}}{\partial z} = -v + \rho_{v}(z - Bx) := 0$$
 $$z^{*} = Bx + \frac{v}{\rho_{v}}$$
 we set $z^{*} = b$ if $z > b$, i.e.
 $$z^{*} = \min\left\{Bx + \frac{v}{\rho_{v}}, b \right\}$$
-\clearpage
+
 Then the update functions for ADMM are as follows:
 \begin{equation*}
 \begin{aligned}
@@ -290,6 +299,7 @@ In summary, the update functions for $\mu_{k}$, $\pi_{k}$ and $\Sigma$ are given
 \hat{\pi}_{k} &= \frac{N_{k}}{N}
 \end{aligned}
 \end{equation*}
+where $N_{k} = \sum_{i = 1}^{N}p(z_{k}|x_{i})$
 \newline
 
 \subproblem
@@ -340,8 +350,8 @@ In summary, the predictive distribution at $x^{*}$ will exactly overlap with $y_
 \newline
 
 \subproblem
-Yes, we can obtain a closed form expression for the $m$-dimensional predictive joint distribution. By the definition of Gaussian process, $y^{*}$ and $y$ will have joint Gaussian distribution, the mean and the covariance matrix are clearly defined by the mean function $m(x)$ and kernel function $k(x, x')$. Then we can use the conditional probability formulas
-$$\mu_{1|2} = \mu_{1} + \Sigma_{12}\Sigma_{22}^{-1}(a - \mu_{2}) ~~~~~~~~ \Sigma_{1|2} = \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$$
-to derive the predictive distribution.
+Yes, we can obtain a closed form expression for the $m$-dimensional predictive joint distribution. By the definition of Gaussian process, $y^{*}$ and $y$ will have joint Gaussian distribution, the mean and the covariance matrix are clearly defined by the mean function $m(x)$, kernel function $k(x, x')$ and $\sigma^{2}$. Then we can use the conditional probability formulas
+$$\mu_{1|2} = \mu_{1} + \Sigma_{12}\Sigma_{22}^{-1}(y - \mu_{2}) ~~~~~~~~ \Sigma_{1|2} = \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$$
+to derive the $m$-dimensional predictive distribution.
 \end{document}
 
